@@ -114,4 +114,3 @@ MongoDB with Django
 * https://staltz.com/djangoconfi-mongoengine/#/
 * https://medium.com/@vasjaforutube/django-mongodb-django-rest-framework-mongoengine-ee4eb5857b9a
 * https://www.ibm.com/developerworks/library/os-django-mongo/
-

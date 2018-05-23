@@ -61,9 +61,6 @@ WSGIPythonHome "c:/python36"
 
 # Linux Deployment
 
-sudo apt update
-sudo apt install apache2
-
 If a firewall exists:
 sudo ufw allow 'Apache'
 sudo ufw status
@@ -82,12 +79,7 @@ cat /etc/apache2/envvars
 cat /var/log/apache2/error.log
 
 Install mod wsgi:
-sudo apt install apache2-dev
-pip3 install mod_wsgi
-mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
-sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
-sudo systemctl restart apache2
-verify with url: http://localhost/dash/results
+
 
 
 https://github.com/GrahamDumpleton/mod_wsgi/issues/308
@@ -102,5 +94,6 @@ Create a directory something like /var/www/project. Change the ownership to you.
 * https://pypi.org/project/mod_wsgi/
 * https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-apache-and-mod_wsgi-on-centos-7
 * https://groups.google.com/forum/#!forum/modwsgi
+* http://modwsgi.readthedocs.io/en/develop/user-guides/virtual-environments.html
 
 

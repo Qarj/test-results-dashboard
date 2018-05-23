@@ -12,22 +12,44 @@ pip install Django
 
 Linux:
 ```
-cd /
+sudo apt update
 sudo apt-get install python3-pip
-sudo apt-get install python3-virtualenv
+sudo apt-get install python3-venv
 sudo apt install gnome-terminal
-mkdir venv
-cd venv
-sudo virtualenv dash
-. dash/bin/activate
-pip3 install Django
+sudo apt install apache2
+sudo apt install apache2-dev
+
+cd /usr/local
+sudo mkdir venvs
+sudo chmod 777 venvs
+cd venvs
+python3 -m venv dash
+cd dash
+source bin/activate
+pip install Django
+pip install mod_wsgi
+
 cd /var/www
 sudo mkdir dash
 sudo chmod 777 dash
 cd dash
 sudo git clone https://github.com/Qarj/test-results-dashboard
 cd test-results-dashboard
-python3 linux_new_dashboard.py
+sudo chmod 777 dash
+sudo chmod 777 dash/results/migrations
+sudo chmod 777 dash/polls/migrations
+python linux_new_dashboard.py
+```
+The last command will perform migrations, open a new gnome-terminal tab, and load a bunch of test data.
+
+Now close the Django development server (new gnome-terminal tab created).
+
+Then back in the same terminal shell with (dash) Python 3 environment activated:
+```
+mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
+sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
+sudo systemctl restart apache2
+verify with url: http://localhost/dash/results
 ```
 
 ### Create a dashboard and load some test data
