@@ -1,16 +1,10 @@
 # test-results-dashboard
 
-POC for test results dashboard
+See the latest results of acceptance tests per application.
 
-## Setup
+Requires Python 3, tested with Python 3.6.5
 
-### Install dependencies
-Windows:
-```
-pip install Django
-```
-
-Linux:
+## Linux Apache Deployment:
 ```
 sudo apt update
 sudo apt-get install python3-pip
@@ -52,21 +46,33 @@ sudo systemctl restart apache2
 verify with url: http://localhost/dash/results
 ```
 
+
+## Windows Apache Deployment
+
+Instructions incoming...
+
+## Development Environment Setup - Windows
+
+```
+mkdir C:\git
+cd C:\git
+git clone https://github.com/Qarj/test-results-dashboard.git
+pip install Django
+```
+
 ### Create a dashboard and load some test data
 ```
 cd test-results-dashboard
 python new_dashboard_with_test_data_(will_erase_all).py
 ```
 
-## Start the server
+### Start the server
 ```
 cd dash
 python manage.py runserver
 ```
 
-## Run the tests
-
-### Django Unit Tests
+### Run the test-results-dashboard Django unit tests
 
 ```
 cd dash
@@ -75,18 +81,9 @@ python manage.py test results
 
 The server does not need to be running for the unit tests.
 
-### WebInject Tests
-
-Run the WebInject tests from the project root folder.
-
-```
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\start.py.xml
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\delete_dashboard_then_create_empty.py.xml
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\new_dashboard_with_test_data_(will_erase_all).py.xml
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\load_test_data.py.xml
-```
-
 ## Use the Test Results Dashboard
+
+These urls assume the Django development server is running.
 
 ### Log a test result
 http://127.0.0.1:8000/results/log?test_name=manual%20test&app_name=Apply&test_passed=True&run_name=Manual_Test&run_server=TeamCity&message=stack%20overflow
@@ -114,8 +111,20 @@ http://127.0.0.1:8000/results/delete/5
 ### Delete all the runs except for the most recent 50
 http://127.0.0.1:8000/results/delete_oldest_runs_only_keep_newest/50/
 
+## WebInject Tests
 
-## Look at the reference
+Run the WebInject tests from the project root folder.
+
+WebInject and the WebInject-Framework need to be first cloned to C:\git
+
+```
+..\webinject-framework\wif.pl ..\test-results-dashboard\tests\start.py.xml
+..\webinject-framework\wif.pl ..\test-results-dashboard\tests\delete_dashboard_then_create_empty.py.xml
+..\webinject-framework\wif.pl ..\test-results-dashboard\tests\new_dashboard_with_test_data_(will_erase_all).py.xml
+..\webinject-framework\wif.pl ..\test-results-dashboard\tests\load_test_data.py.xml
+```
+
+## Django reference
 
 https://docs.djangoproject.com/en/2.0/intro/tutorial01/
 
