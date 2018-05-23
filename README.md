@@ -25,7 +25,7 @@ cd /var/www
 sudo mkdir dash
 sudo chmod 777 dash
 cd dash
-sudo git clone ...
+sudo git clone https://github.com/Qarj/test-results-dashboard
 cd test-results-dashboard
 python3 linux_new_dashboard.py
 ```

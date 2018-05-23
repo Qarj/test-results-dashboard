@@ -85,7 +85,7 @@ Install mod wsgi:
 sudo apt install apache2-dev
 pip3 install mod_wsgi
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
-sudo cp ~/git/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
+sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
 sudo systemctl restart apache2
 verify with url: http://localhost/dash/results
 
