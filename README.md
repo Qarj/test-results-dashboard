@@ -49,7 +49,39 @@ verify with url: http://localhost/dash/results
 
 ## Windows Apache Deployment
 
-Instructions incoming...
+- Install Apache:
+    - From Apache Lounge https://www.apachelounge.com/download/ download Win32 zip file - not 64 bit, then extract so C:\Apache24\bin folder is available.
+        - From Admin terminal, `cd C:\Apache\bin` then `httpd -k install` followed by `httpd -k start` (port 80 will need to be free for this to work)
+
+- Install mod_wsgi-express:
+    - Follow instructions exactly, and do not mix 32 and 64 bit!
+    - Microsoft Visual C++ 14.0 build toosl are required, you install them from the Visual Studio 2017 Build Tools
+        - http://landinghub.visualstudio.com/visual-cpp-build-tools - choose install "Visual Studio Build Tools 2017"
+        - Run the installer, click `Visual C++ build tools` (top left option) then the checkboxs for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
+        - You might need to reboot
+    - Ensure you have Python 3.6.5 32-bit version installed (default from Python.org) Do not install 64 bit. 
+    - Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
+        - Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
+    - Now it will be possible to do `pip install mod_wsgi`
+
+- Verify wsgi install with a Hello World app:
+    - `copy C:\git\test-results-dashboard\tests\hello_world\httpd-vhosts_windows.conf C:\Apache24\conf\extra\httpd-vhosts.conf`
+    - `notepad C:\Apache24\conf\httpd.conf` then uncomment `Include conf/extra/httpd-vhosts.conf`
+    - `mod_wsgi-express module-config` then copy the output to httpd.conf after the #LoadModule section
+    - `httpd -k restart`
+    - verify with url: http://localhost/hello_world
+
+- Note - the output from `mod_wsgi-express module-config` will look a bit like:
+```
+LoadFile "c:/python36/python36.dll"
+LoadModule wsgi_module "c:/python36/lib/site-packages/mod_wsgi/server/mod_wsgi.cp36-win32.pyd"
+WSGIPythonHome "c:/python36"
+```
+
+- Configure Django to use Apache:
+    - `copy C:\git\test-results-dashboard\dash\httpd-vhosts_windows.conf C:\Apache24\conf\extra\httpd-vhosts.conf`
+    - `httpd -k restart`
+    - verify with url: http://localhost/dash/results
 
 ## Development Environment Setup - Windows
 
