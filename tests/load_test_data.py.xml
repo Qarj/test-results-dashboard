@@ -1,0 +1,13 @@
+<testcases repeat="1">
+
+<case
+    id="10"
+    description1="Load in some test data"
+    method="cmd"
+    command="cd ../test-results-dashboard & python tests/load_test_data_test_helper.py"
+    verifypositive1="Test data loaded ok for Search app"
+    verifypositive2="Test data loaded ok for Details app"
+    verifypositive3="Test data loaded ok for Apply app"
+/>
+
+</testcases>

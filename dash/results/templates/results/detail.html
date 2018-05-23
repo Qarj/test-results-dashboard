@@ -1,0 +1,60 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if result %}
+    <h2>{{ page_heading }}</h2>
+    <table id="result_detail">
+        <tr>
+            <td>App</td>
+            <td class="bold"><a href="{% url 'results:app' result.app_name %}" class="normal">{{ result.app_name }}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Test</td>
+            <td class="bold">{{result.test_name}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td class="bold{{result.test_status}}">{{result.test_status}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Run Name</td>
+            <td class="bold"><a href="{% url 'results:run' result.run_name %}" class="normal">{{ result.run_name }}</a></td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Run Server</td>
+            <td class="bold"><a href="{% url 'results:latest' result.run_server %}" class="normal">{{ result.run_server }}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Start</td>
+            <td class="bold">{{result.date_created | date:"d M Y H:i:s.u"}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>End</td>
+            <td class="bold">{{result.date_modified | date:"d M Y H:i:s.u"}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Duration</td>
+            <td class="bold">{{result.duration}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Message</td>
+            <td class="bold">{{result.message|default_if_none:''}}</td>
+            <!-- ~ End Row -->
+        </tr>
+    </table>
+{% else %}
+    <p>No results are available.</p>
+    <h4><a href="{% url 'results:latest' %}" class="normal">See all the latest results here</a></h4>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if error %}
+    <h4>{{error}}</h4>
+{% else %}
+    <h2>{{ page_heading }}</h2>
+    <table id="result_detail">
+        <tr>
+            <!-- For unit tests: test_result_id is {{result.id}} -->
+            <td>Result id</td>
+            <td class="bold">{{result.id}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>App</td>
+            <td class="bold"><a href="{% url 'results:app' result.app_name %}" class="normal">{{ result.app_name }}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Test</td>
+            <td class="bold">{{result.test_name}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td class="bold{{result.test_status}}">{{result.test_status}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Run Name</td>
+            <td class="bold"><a href="{% url 'results:run' result.run_name %}" class="normal">{{ result.run_name }}</a></td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Run Server</td>
+            <td class="bold"><a href="{% url 'results:latest' result.run_server %}" class="normal">{{ result.run_server }}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Log Date</td>
+            <td class="bold">{{result.date_created | date:"d M Y H:i:s.u"}}</td>
+            <!-- ~ End Row -->
+        </tr>
+        <tr>
+            <td>Message</td>
+            <td class="bold">{{result.message|default_if_none:''}}</td>
+            <!-- ~ End Row -->
+        </tr>
+    </table>
+    <p>{{info}}</p>
+{% endif %}
+
+{% endblock %}

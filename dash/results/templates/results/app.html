@@ -1,0 +1,48 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if app_results %}
+    <h1 class="{{app_status}}">App status: {{ app_status }}<h1>
+    <h2>{{ page_heading }}</h2>
+    <table id="app_results_table">
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Run duration</th>
+            <th></th>
+            <th>Start</th>
+            <th>End</th>
+        </tr>
+    {% for result in app_results reversed %}
+        <tr>
+            <td>
+                <a href="{% url 'results:run' result.run_name %}" class="normal">{{ result.run_name }}</a>
+            </td>
+            <td>
+                <a href="{% url 'results:run' result.run_name %}" name="run_status" class="{{result.run_status}}">{{result.run_status_desc}}</a>
+            </td>
+            <td duration_hires="{{result.duration}}">
+                {{result.duration_text}}
+            </td>
+            <td>
+                <a href="{% url 'results:app' app_name result.run_server %}" class="normal">{{ result.run_server }}</a>
+            </td>
+            <td start_hires="{{result.start | date:"d M Y H:i:s.u"}}">
+                {{result.start | date:"d M Y H:i:s"}}
+            </td>
+            <td end_hires="{{result.end | date:"d M Y H:i:s.u"}}">
+                {{result.end | date:"d M Y H:i:s"}}
+            </td>
+            <!-- ~ End Row -->
+        </tr>
+    {% endfor %}
+    </table>
+    <h4>{{ app_status_desc }}</h4>
+{% else %}
+    <p>No results are available.</p>
+    <h4><a href="{% url 'results:latest' %}" class="normal">See all the latest results here</a></h4>
+
+{% endif %}
+
+{% endblock %}

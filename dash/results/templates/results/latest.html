@@ -1,0 +1,44 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if latest_results %}
+    <h2>{{ page_heading }}</h2>
+    <table id="latest_results_table">
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Start</th>
+            <th>Duration</th>
+        </tr>
+    {% for result in latest_results reversed %}
+        <tr id="result_id_{{result.id}}">
+            <td>
+                <a href="{% url 'results:run' result.run_name %}" name="run_status" class="{{result.run_status}}">{{result.total_tests}} tests{{result.failed_message}}</a>
+            </td>
+            <td>
+                <a href="{% url 'results:app' result.app_name %}" class="normal">{{ result.app_name }}</a>
+            </td>
+            <td>
+                <a href="{% url 'results:run' result.run_name %}" class="normal">{{ result.run_name }}</a>
+            </td>
+            <td>
+                <a href="{% url 'results:latest' result.run_server %}" class="normal">{{result.run_server}}</a>
+            </td>
+            <td>
+                {{result.start | date:"d M Y H:i:s"}}
+            </td>
+            <td hires_duration="{{result.duration}}">
+                {{result.duration_text}}
+            </td>
+            <!-- ~ End Row -->
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No results are available.</p>
+{% endif %}
+
+{% endblock %}

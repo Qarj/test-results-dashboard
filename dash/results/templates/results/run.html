@@ -1,0 +1,50 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if run_results %}
+    <h2>{{ page_heading }}</h2>
+    <h4 class="{{ overall_status }}">{{ page_summary }}</h4>
+    <table id="run_results_table">
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Duration</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Message</th>
+        </tr>
+    {% for result in run_results %}
+        <tr id="result_id_{{result.id}}">
+            <td>
+                <a href="{% url 'results:app' result.app_name %}" class="normal">{{ result.app_name }}</a>
+            </td>
+            <td>
+                <a href="{% url 'results:detail' result.id %}" class="{{result.test_status}}">{{result.test_status}}</a>
+            </td>
+            <td>
+                {{result.test_name}}
+            </td>
+            <td name="duration" duration_hires="{{result.duration}}">
+                {{result.duration_text}}
+            </td>
+            <td name="start" start_hires="{{result.date_created | date:"d M Y H:i:s.u"}}">
+                {{result.date_created | date:"d M Y H:i:s"}}
+            </td>
+            <td name="end" end_hires="{{result.date_modified | date:"d M Y H:i:s.u"}}">
+                {{result.date_modified | date:"d M Y H:i:s"}}
+            </td>
+            <td name="message">
+                {{result.message|default_if_none:''}}
+            </td>
+            <!-- ~ End Row -->
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No results are available.</p>
+    <h4><a href="{% url 'results:latest' %}" class="normal">See all the latest results here</a></h4>
+{% endif %}
+
+{% endblock %}
