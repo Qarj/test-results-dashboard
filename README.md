@@ -4,7 +4,9 @@ See the latest results of acceptance tests per application.
 
 Requires Python 3, tested with Python 3.6.5
 
-## Linux Apache Deployment:
+## Linux Apache Deployment
+
+First install required system packages as root:
 ```
 sudo apt update
 sudo apt-get install python3-pip
@@ -12,7 +14,10 @@ sudo apt-get install python3-venv
 sudo apt install gnome-terminal
 sudo apt install apache2
 sudo apt install apache2-dev
+```
 
+Now create a Python 3 virtual environment and activate it:
+```
 cd /usr/local
 sudo mkdir venvs
 sudo chmod 777 venvs
@@ -20,25 +25,50 @@ cd venvs
 python3 -m venv dash
 cd dash
 source bin/activate
+```
+
+Now that the virtual environment is active, any `python` and `pip` commands will
+refer to Python 3, and not Python 2. Prove this:
+```
+python --version
+```
+
+Install the necessary packages for test-results-dashboard as a normal user, not as root:
+```
 pip install Django
 pip install mod_wsgi
+```
+If you are plagued by SSL errors, then you need to build Python 3 manually to sort it out.
+Check here for how to do this: https://github.com/Qarj/linux-survival/blob/master/BuildPython3.md
+When you've got Python 3 working with shared libraries, `cd /usr/local/venvs` then `rm -r dash` go
+back to the `python3 -m venv dash` step and continue from there.
 
+Create a folder for test-results-dashboard and clone the project:
+```
 cd /var/www
 sudo mkdir dash
 sudo chmod 777 dash
 cd dash
 sudo git clone https://github.com/Qarj/test-results-dashboard
+```
+
+Set permissions so the Apache user can access the project:
+```
 cd test-results-dashboard
 sudo chmod 777 dash
 sudo chmod 777 dash/results/migrations
 sudo chmod 777 dash/polls/migrations
+```
+
+Initialise the dashboard:
+```
 python linux_new_dashboard.py
 ```
-The last command will perform migrations, open a new gnome-terminal tab, and load a bunch of test data.
+The last command will perform Django SQL migrations, open a new gnome-terminal tab, and load a bunch of test data.
 
 Now close the Django development server (new gnome-terminal tab created).
 
-Then back in the same terminal shell with (dash) Python 3 environment activated:
+Then back in the original terminal shell that has the (dash) Python 3 environment activated:
 ```
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
 sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
@@ -46,6 +76,10 @@ sudo systemctl restart apache2
 verify with url: http://localhost/dash/results
 ```
 
+Optional - deactivate the virtual environment from your shell:
+```
+deactivate
+```
 
 ## Windows Apache Deployment
 
