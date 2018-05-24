@@ -66,12 +66,13 @@ python linux_new_dashboard.py
 ```
 The last command will perform Django SQL migrations, open a new gnome-terminal tab, and load a bunch of test data.
 
-Now close the Django development server (new gnome-terminal tab created).
+Now close the Django development server (new gnome-terminal tab or window created).
 
 Then back in the original terminal shell that has the (dash) Python 3 environment activated:
 ```
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
 sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
+sudo rm /etc/apache2/sites-enabled/000-default.conf
 sudo systemctl restart apache2
 verify with url: http://localhost/dash/results
 ```
