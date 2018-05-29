@@ -36,7 +36,8 @@ namespace Prime.UnitTests.Services
             string testName = Dashboard.LastTwoSegmentsOfNUnitTestFullName(NUnit.Framework.TestContext.CurrentContext.Test.FullName);
             string testStatus = NUnit.Framework.TestContext.CurrentContext.Result.Outcome.Status.ToString();
             Console.WriteLine(testStatus);
-            Dashboard.LogResult(testName, appName, runName, runServer, testStatus);
+            string result = Dashboard.LogResult(testName, appName, runName, runServer, testStatus);
+            //Console.WriteLine("Log Result Message: " + result );
         }
 
         public TestPrime()
@@ -114,6 +115,7 @@ namespace Prime.UnitTests.Services
             string logURL = "http://dash/dash/results/log?";
             string queryString = String.Format("test_name={0}&app_name={1}&run_name={2}&run_server={3}&test_passed={4}",
                                      testName, appName, runName, runServer, testStatus);
+            //Console.WriteLine("Log URL: " + logURL + queryString );
 
             try
             {

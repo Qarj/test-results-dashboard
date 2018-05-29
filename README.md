@@ -70,6 +70,7 @@ Now close the Django development server (new gnome-terminal tab or window create
 
 Then back in the original terminal shell that has the (dash) Python 3 environment activated:
 ```
+sudo chmod 666 dash/db.sqlite3
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
 sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
 sudo rm /etc/apache2/sites-enabled/000-default.conf
