@@ -36,7 +36,14 @@ namespace Prime.UnitTests.Services
         {
             string testName = Dashboard.GetTestName();
             string testStatus = Dashboard.GetTestStatus();
-            string result = Dashboard.LogResult(testName, appName, runName, runServer, testStatus);
+            string result = Dashboard.LogResult(
+                Dashboard.GetTestName(),
+                appName,
+                runName,
+                runServer,
+                testStatus,
+                Dashboard.GetTestMessage()
+            );
             //Console.WriteLine(testStatus);
             //Console.WriteLine("Log Result Message: " + result );
         }
@@ -124,6 +131,23 @@ namespace Prime.UnitTests.Services
             }
         }
 
+        public static string LogResult(string testName, string appName, string runName, string runServer, string testStatus, string message)
+        {
+            string logURL = "http://dash/dash/results/log?";
+            string queryString = String.Format("test_name={0}&app_name={1}&run_name={2}&run_server={3}&test_passed={4}&message={5}",
+                                     testName, appName, runName, runServer, testStatus, message);
+            //Console.WriteLine("Log URL: " + logURL + queryString );
+
+            try
+            {
+                return Get(logURL + queryString);
+            }
+            catch (WebException e)
+            {
+                return "Web request failed";
+            }
+        }
+
         private static string Get(string uri)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
@@ -140,6 +164,14 @@ namespace Prime.UnitTests.Services
         public static string GetTestName()
         {
             return Dashboard._LastTwoSegmentsOfNUnitTestFullName(NUnit.Framework.TestContext.CurrentContext.Test.FullName);
+        }
+
+        //NUnit.Framework.TestContext.CurrentContext.Result.StackTrace
+        //TestContext.CurrentContext.Result.Outcome.Status; (For test Execution Status)
+
+        public static string GetTestMessage()
+        {
+            return NUnit.Framework.TestContext.CurrentContext.Result.Message;
         }
 
         private static string _LastTwoSegmentsOfNUnitTestFullName(string testName)
