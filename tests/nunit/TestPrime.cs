@@ -27,8 +27,14 @@ namespace Prime.UnitTests.Services
         [SetUp]
         protected void SetUp()
         {
-            Console.WriteLine("Welcome to the set up!");
-            string result = Dashboard.LogResult(Dashboard.GetTestName(), appName, runName, runServer, "Pending");
+            string result = Dashboard.LogResult(
+                Dashboard.GetTestName(),
+                appName,
+                runName,
+                runServer,
+                "Pending",
+                ""
+            );
         }
 
         [TearDown]
@@ -44,8 +50,6 @@ namespace Prime.UnitTests.Services
                 testStatus,
                 Dashboard.GetTestMessage()
             );
-            //Console.WriteLine(testStatus);
-            //Console.WriteLine("Log Result Message: " + result );
         }
 
         public TestPrime()
@@ -113,30 +117,12 @@ namespace Prime.UnitTests.Services
         {
             return Environment.GetEnvironmentVariable("computername");
         }
-        
-        public static string LogResult(string testName, string appName, string runName, string runServer, string testStatus)
-        {
-            string logURL = "http://dash/dash/results/log?";
-            string queryString = String.Format("test_name={0}&app_name={1}&run_name={2}&run_server={3}&test_passed={4}",
-                                     testName, appName, runName, runServer, testStatus);
-            //Console.WriteLine("Log URL: " + logURL + queryString );
-
-            try
-            {
-                return Get(logURL + queryString);
-            }
-            catch (WebException e)
-            {
-                return "Web request failed";
-            }
-        }
 
         public static string LogResult(string testName, string appName, string runName, string runServer, string testStatus, string message)
         {
             string logURL = "http://dash/dash/results/log?";
             string queryString = String.Format("test_name={0}&app_name={1}&run_name={2}&run_server={3}&test_passed={4}&message={5}",
                                      testName, appName, runName, runServer, testStatus, message);
-            //Console.WriteLine("Log URL: " + logURL + queryString );
 
             try
             {
@@ -167,7 +153,7 @@ namespace Prime.UnitTests.Services
         }
 
         //NUnit.Framework.TestContext.CurrentContext.Result.StackTrace
-        //TestContext.CurrentContext.Result.Outcome.Status; (For test Execution Status)
+        //NUnit.Framework.TestContext.CurrentContext.Result.Outcome.Status; (For test Execution Status)
 
         public static string GetTestMessage()
         {
