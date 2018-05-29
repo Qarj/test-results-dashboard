@@ -28,16 +28,16 @@ namespace Prime.UnitTests.Services
         protected void SetUp()
         {
             Console.WriteLine("Welcome to the set up!");
+            string result = Dashboard.LogResult(Dashboard.GetTestName(), appName, runName, runServer, "Pending");
         }
 
         [TearDown]
         protected void TearDown()
         {
-            //string testName = Dashboard.LastTwoSegmentsOfNUnitTestFullName(NUnit.Framework.TestContext.CurrentContext.Test.FullName);
             string testName = Dashboard.GetTestName();
             string testStatus = Dashboard.GetTestStatus();
-            Console.WriteLine(testStatus);
             string result = Dashboard.LogResult(testName, appName, runName, runServer, testStatus);
+            //Console.WriteLine(testStatus);
             //Console.WriteLine("Log Result Message: " + result );
         }
 
