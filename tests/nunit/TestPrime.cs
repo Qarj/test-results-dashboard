@@ -111,7 +111,7 @@ namespace Prime.UnitTests.Services
         
         public static string LogResult(string testName, string appName, string runName, string runServer, string testStatus)
         {
-            string logURL = "http://127.0.0.1:8000/results/log?";
+            string logURL = "http://dash/dash/results/log?";
             string queryString = String.Format("test_name={0}&app_name={1}&run_name={2}&run_server={3}&test_passed={4}",
                                      testName, appName, runName, runServer, testStatus);
 
