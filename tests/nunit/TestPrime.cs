@@ -33,8 +33,9 @@ namespace Prime.UnitTests.Services
         [TearDown]
         protected void TearDown()
         {
-            string testName = Dashboard.LastTwoSegmentsOfNUnitTestFullName(NUnit.Framework.TestContext.CurrentContext.Test.FullName);
-            string testStatus = NUnit.Framework.TestContext.CurrentContext.Result.Outcome.Status.ToString();
+            //string testName = Dashboard.LastTwoSegmentsOfNUnitTestFullName(NUnit.Framework.TestContext.CurrentContext.Test.FullName);
+            string testName = Dashboard.GetTestName();
+            string testStatus = Dashboard.GetTestStatus();
             Console.WriteLine(testStatus);
             string result = Dashboard.LogResult(testName, appName, runName, runServer, testStatus);
             //Console.WriteLine("Log Result Message: " + result );
@@ -92,10 +93,6 @@ namespace Prime.UnitTests.Services
 
     public static class Dashboard
     {
-        public static int Sum(int number1, int number2)
-        {
-            return number1 + number2;
-        }
 
         private static Random random = new Random();
         public static string RandomString(int length)
@@ -140,10 +137,20 @@ namespace Prime.UnitTests.Services
             }
         }
         
-        public static string LastTwoSegmentsOfNUnitTestFullName(string testName)
+        public static string GetTestName()
+        {
+            return Dashboard._LastTwoSegmentsOfNUnitTestFullName(NUnit.Framework.TestContext.CurrentContext.Test.FullName);
+        }
+
+        private static string _LastTwoSegmentsOfNUnitTestFullName(string testName)
         {
             string[] segments = Regex.Split(testName, "\\.");
             return segments[segments.Length - 2] + "." + segments.Last();
+        }
+
+        public static string GetTestStatus()
+        {
+            return NUnit.Framework.TestContext.CurrentContext.Result.Outcome.Status.ToString();
         }
 
     }
