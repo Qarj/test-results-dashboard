@@ -74,8 +74,8 @@ mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
 sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
 sudo rm /etc/apache2/sites-enabled/000-default.conf
 sudo systemctl restart apache2
-verify with url: http://localhost/dash/results
 ```
+Verify with url: http://localhost/dash/results
 
 Optional - deactivate the virtual environment from your shell:
 ```
