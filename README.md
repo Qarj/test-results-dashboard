@@ -57,7 +57,6 @@ Set permissions so the Apache user can access the project:
 cd test-results-dashboard
 sudo chmod 777 dash
 sudo chmod 777 dash/results/migrations
-sudo chmod 777 dash/polls/migrations
 ```
 
 Initialise the dashboard:
