@@ -14,8 +14,6 @@ def remove_if_exists(file):
 
 remove_if_exists("dash/db.sqlite3")
 remove_if_exists("dash/results/migrations/0001_initial.py")
-remove_if_exists("dash/polls/migrations/0001_initial.py")
 
 os.system('python3 dash/manage.py makemigrations results')
-os.system('python3 dash/manage.py makemigrations polls')
 os.system('python3 dash/manage.py migrate')

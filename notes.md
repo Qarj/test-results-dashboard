@@ -79,11 +79,11 @@ response = client.get('/')
 response.status_code
 
 from django.urls import reverse
-response = client.get(reverse('polls:index'))
+response = client.get(reverse('dash:results'))
 
 response.status_code
 response.content
-response.context['latest_question_list']
+response.context['Result']
 ```
 
 ## SQLite3
@@ -101,7 +101,7 @@ print(cursor.fetchall())
 ### View columns
 
 ```
-cursor = con.execute('select * from polls_question')
+cursor = con.execute('select * from dash_Result')
 names = list(map(lambda x: x[0], cursor.description))
 names
 ```
