@@ -2,7 +2,7 @@
 
 See the latest results of acceptance tests per application.
 
-Requires Python 3, tested with Python 3.6.5
+Requires Python 3, tested with Python 3.5.2 and 3.6.5.
 
 ## Linux Apache Deployment
 
