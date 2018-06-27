@@ -71,11 +71,19 @@ Then back in the original terminal shell that has the (dash) Python 3 environmen
 ```
 sudo chmod 666 dash/db.sqlite3
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
-sudo cp /var/www/dash/test-results-dashboard/dash/httpd-vhosts_linux.conf /etc/apache2/sites-enabled/test-results-dashboard.conf
+sudo cp /var/www/dash/test-results-dashboard/dash/all-qarj-projects-linux.conf /etc/apache2/sites-enabled/all-qarj-projects-linux.conf
 sudo rm /etc/apache2/sites-enabled/000-default.conf
 sudo systemctl restart apache2
 ```
+
 Verify with url: http://localhost/dash/results
+
+### Debugging
+
+```
+sudo cat /etc/apache2/envvars
+sudo cat /var/log/apache2/error.log
+```
 
 Optional - deactivate the virtual environment from your shell:
 ```
