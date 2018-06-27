@@ -46,7 +46,7 @@ def load_data_for(app="DefaultApp", run_name="DefaultRun", random_status=False, 
 
             
 def get_run():
-    rand = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    rand = ''.join(random.sample(string.ascii_uppercase + string.digits, k=10))
     return 'TestRun_' + rand
 
 host_name = "127.0.0.1"
