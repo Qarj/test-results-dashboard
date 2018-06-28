@@ -9,11 +9,11 @@ Requires Python 3, tested with Python 3.5.2 and 3.6.5.
 First install required system packages as root:
 ```
 sudo apt update
-sudo apt-get install python3-pip
-sudo apt-get install python3-venv
-sudo apt install gnome-terminal
-sudo apt install apache2
-sudo apt install apache2-dev
+sudo apt-get  --yes install python3-pip
+sudo apt-get  --yes install python3-venv
+sudo apt  --yes install gnome-terminal
+sudo apt  --yes install apache2
+sudo apt  --yes install apache2-dev
 ```
 
 Now create a Python 3 virtual environment and activate it:
