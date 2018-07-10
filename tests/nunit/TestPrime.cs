@@ -126,10 +126,16 @@ namespace Prime.UnitTests.Services
 
             try
             {
-                return Get(logURL + queryString);
+                string response = Get(logURL + queryString);
+                if ( !(response.Contains("Test logged ok")) ) {
+                    Console.WriteLine("Error message logging test for URL: " + logURL + queryString);
+                    Console.WriteLine(response);
+                }
+                return response;
             }
             catch (WebException e)
             {
+                Console.WriteLine("Server error logging test for URL: " + logURL + queryString);
                 return "Web request failed";
             }
         }
