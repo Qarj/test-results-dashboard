@@ -111,7 +111,7 @@ deactivate
     - `copy C:\git\test-results-dashboard\dash\all-qarj-projects-windows.conf C:\Apache24\conf\extra\httpd-vhosts.conf`
     - `notepad C:\Apache24\conf\httpd.conf` then uncomment `Include conf/extra/httpd-vhosts.conf`
     - `mod_wsgi-express module-config` then copy the output to httpd.conf after the #LoadModule section
-    - `httpd -k restart`
+    - `C:\Apache24\bin\httpd -k restart`
     - verify with url: http://localhost/dash/results
 
 - Note - the output from `mod_wsgi-express module-config` will look a bit like:
