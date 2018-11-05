@@ -99,12 +99,13 @@ deactivate
 - Install mod_wsgi-express:
     - Follow instructions exactly, and do not mix 32 and 64 bit!
     - Microsoft Visual C++ 14.0 build toosl are required, you install them from the Visual Studio 2017 Build Tools
-        - http://landinghub.visualstudio.com/visual-cpp-build-tools - choose install "Visual Studio Build Tools 2017"
+        - https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017 - choose install "Build Tools for Visual Studio 2017"
         - Run the installer, click `Visual C++ build tools` (top left option) then the checkboxs for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
         - You might need to reboot
     - Ensure you have Python 3.6.5 32-bit version installed (default from Python.org) Do not install 64 bit. 
     - Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
         - Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
+    - If Apache is not installed at a common loction, then specify it, e.g. `set "MOD_WSGI_APACHE_ROOTDIR=D:\Apache24"`
     - Now it will be possible to do `pip install mod_wsgi`
 
 - Configure Django to use Apache:
