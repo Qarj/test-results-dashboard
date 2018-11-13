@@ -98,14 +98,14 @@ deactivate
 
 - Install mod_wsgi-express:
     - Follow instructions exactly, and do not mix 32 and 64 bit!
-    - Microsoft Visual C++ 14.0 build toosl are required, you install them from the Visual Studio 2017 Build Tools
+    - Microsoft Visual C++ 14.0 build tools are required, you install them from the Visual Studio 2017 Build Tools
         - https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017 - choose install "Build Tools for Visual Studio 2017"
-        - Run the installer, click `Visual C++ build tools` (top left option) then the checkboxs for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
+        - Run the installer, click `Visual C++ build tools` (top left option) then the check boxes for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
         - You might need to reboot
     - Ensure you have Python 3.6.5 32-bit version installed (default from Python.org) Do not install 64 bit. 
     - Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
         - Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
-    - If Apache is not installed at a common loction, then specify it, e.g. `set "MOD_WSGI_APACHE_ROOTDIR=D:\Apache24"`
+    - If Apache is not installed at a common location, then specify it, e.g. `set "MOD_WSGI_APACHE_ROOTDIR=D:\Apache24"`
     - Now it will be possible to do `pip install mod_wsgi`
 
 - Configure Django to use Apache:
@@ -183,17 +183,19 @@ http://127.0.0.1:8000/results/delete/5
 ### Delete all the runs except for the most recent 50
 http://127.0.0.1:8000/results/delete_oldest_runs_only_keep_newest/50/
 
-## WebInject Tests
+## WebImblaze Tests
 
-Run the WebInject tests from the project root folder.
+Run the WebImblaze tests from the project root folder.
 
-WebInject and the WebInject-Framework need to be first cloned to C:\git
+WebImblaze and the WebImblaze-Framework need to be first cloned to C:\git
+
+These tests are only for the development server, they will not work when Django is running from Apache.
 
 ```
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\start.py.xml
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\delete_dashboard_then_create_empty.py.xml
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\new_dashboard_with_test_data_(will_erase_all).py.xml
-..\webinject-framework\wif.pl ..\test-results-dashboard\tests\load_test_data.py.xml
+perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/start.py.test
+perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/delete_dashboard_then_create_empty.py.test
+perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/new_dashboard_with_test_data_(will_erase_all).py.test
+perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/load_test_data.py.test
 ```
 
 ## Django reference

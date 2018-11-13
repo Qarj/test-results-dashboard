@@ -1,0 +1,13 @@
+--=  
+    WebImblaze waits for all sub processes to end before it continues ...
+    you need to manually kill the Test Results Dashboard server for the
+    test to complete
+=--
+
+step:                   Start dashboard
+desc:                   press CTRL-BREAK in spawned server window to continue
+shell1:                 cd
+shell2:                 cd ../test-results-dashboard & python start.py
+shell4:                 cd
+verifypositive:         Test Results Dashboard is running at
+

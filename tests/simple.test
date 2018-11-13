@@ -1,0 +1,9 @@
+step:                   Log a result
+url:                    http://127.0.0.1:8000/results/log/?test_name=WebImblaze%20Check_{RANDOM:10}&app_name=Apply&test_passed=True&run_name=WebImblaze_Test&run_server=localhost
+verifypositive:         Test logged ok
+parseresponseRESULT_ID: test_result_id is |;|
+
+step:                   View logged result
+url:                    http://127.0.0.1:8000/results/{RESULT_ID}/
+verifypositive:         You are looking at result
+
