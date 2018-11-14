@@ -92,6 +92,13 @@ deactivate
 
 ## Windows Apache Deployment
 
+```
+mkdir c:\git
+cd /D c:/git
+git clone https://github.com/Qarj/test-results-dashboard
+pip install Django
+```
+
 - Install Apache:
     - From Apache Lounge https://www.apachelounge.com/download/ download Win32 zip file - not 64 bit, then extract so C:\Apache24\bin folder is available.
         - From Admin terminal, `cd C:\Apache\bin` then `httpd -k install` followed by `httpd -k start` (port 80 will need to be free for this to work)
@@ -110,10 +117,9 @@ deactivate
 
 - Configure Django to use Apache:
     - `copy C:\git\test-results-dashboard\dash\all-qarj-projects-windows.conf C:\Apache24\conf\extra\httpd-vhosts.conf`
-    - `notepad C:\Apache24\conf\httpd.conf` then uncomment `Include conf/extra/httpd-vhosts.conf`
+    - `start notepad++ C:\Apache24\conf\httpd.conf` then uncomment `Include conf/extra/httpd-vhosts.conf`
     - `mod_wsgi-express module-config` then copy the output to httpd.conf after the #LoadModule section
     - `C:\Apache24\bin\httpd -k restart`
-    - verify with url: http://localhost/dash/results
 
 - Note - the output from `mod_wsgi-express module-config` will look a bit like:
 ```
@@ -121,22 +127,23 @@ LoadFile "c:/python36/python36.dll"
 LoadModule wsgi_module "c:/python36/lib/site-packages/mod_wsgi/server/mod_wsgi.cp36-win32.pyd"
 WSGIPythonHome "c:/python36"
 ```
-    
-    
-## Development Environment Setup - Windows
 
-```
-mkdir C:\git
-cd C:\git
-git clone https://github.com/Qarj/test-results-dashboard.git
-pip install Django
-```
-
-### Create a dashboard and load some test data
+- Create a dashboard and load some test data
 ```
 cd test-results-dashboard
 python new_dashboard_with_test_data_(will_erase_all).py
 ```
+
+- Verify with url: http://localhost/dash/results
+
+Debug
+```
+start notepad++ /Apache24/conf/extra/httpd-vhosts.conf
+start notepad++ /Apache24/logs/error.log
+start notepad++ /Apache24/logs/access.log
+```    
+    
+## Development Environment Setup - Windows
 
 ### Start the server
 ```
