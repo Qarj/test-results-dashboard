@@ -4,7 +4,75 @@ See the latest results of acceptance tests per application.
 
 Requires Python 3, tested with Python 3.5.2 and 3.6.5.
 
-## Linux Apache Deployment
+# API
+
+## Summary
+
+The paths given below are relative to the {SITE_ROOT} location.
+
+For the Django development server, {SITE_ROOT} is http://127.0.0.1:8000/
+
+If you have deployed this to Apache, then the {SITE_ROOT} might be like http://mydomain.com/dash/
+
+## Log a test result
+
+HTTP GET
+```
+{SITE_ROOT}log?test_name=ApplyAsNewUser&app_name=Apply&test_passed=False&run_name=Apply_Core_J9ZJK&run_server=TeamCity&message=Stack+Trace+...
+```
+
+Parameter   | Example Value
+----------- | ------------- 
+test_name   | ApplyAsNewUser
+app_name    | Apply
+test_passed | False
+run_name    | Apply_Core_J9ZJK
+run_server  | TeamCity
+message     | Stack+Trace+...
+
+## View all runs for an app
+
+```
+{SITE_ROOT}results/app/Apply
+{SITE_ROOT}results/app/Details
+{SITE_ROOT}results/app/Search
+```
+
+## View results for a run
+```
+{SITE_ROOT}results/run/Apply_Core_J9ZJK
+```
+
+## View latest results
+```
+{SITE_ROOT}results/latest
+```
+
+## View latest results for a run server
+```
+{SITE_ROOT}results/latest/TeamCity
+```
+
+## View a single test result id
+```
+{SITE_ROOT}results/2
+```
+
+## Delete a single test result id
+
+HTTP GET
+```
+{SITE_ROOT}results/delete/5
+```
+
+## Delete all the runs except for the most recent 50
+
+HTTP GET
+```
+{SITE_ROOT}results/delete_oldest_runs_only_keep_newest/50/
+```
+
+# Linux Apache Deployment
 
 First install required system packages as root:
 ```
@@ -78,7 +146,7 @@ sudo systemctl restart apache2
 
 Verify with url: http://localhost/dash/results
 
-### Debugging
+## Debugging
 
 ```
 sudo cat /etc/apache2/envvars
@@ -90,7 +158,7 @@ Optional - deactivate the virtual environment from your shell:
 deactivate
 ```
 
-## Windows Apache Deployment
+# Windows Apache Deployment
 
 ```
 mkdir c:\git
@@ -99,59 +167,99 @@ git clone https://github.com/Qarj/test-results-dashboard
 pip install Django
 ```
 
-- Install Apache:
-    - From Apache Lounge https://www.apachelounge.com/download/ download Win32 zip file - not 64 bit, then extract so C:\Apache24\bin folder is available.
-        - From Admin terminal, `cd C:\Apache\bin` then `httpd -k install` followed by `httpd -k start` (port 80 will need to be free for this to work)
+## Install Apache
 
-- Install mod_wsgi-express:
-    - Follow instructions exactly, and do not mix 32 and 64 bit!
-    - Microsoft Visual C++ 14.0 build tools are required, you install them from the Visual Studio 2017 Build Tools
-        - https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017 - choose install "Build Tools for Visual Studio 2017"
-        - Run the installer, click `Visual C++ build tools` (top left option) then the check boxes for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
-        - You might need to reboot
-    - Ensure you have Python 3.6.5 32-bit version installed (default from Python.org) Do not install 64 bit. 
-    - Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
-        - Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
-    - If Apache is not installed at a common location, then specify it, e.g. `set "MOD_WSGI_APACHE_ROOTDIR=D:\Apache24"`
-    - Now it will be possible to do `pip install mod_wsgi`
+From Apache Lounge https://www.apachelounge.com/download/ download Win32 zip file - not 64 bit, then extract so C:\Apache24\bin folder is available.
 
-- Configure Django to use Apache:
-    - `copy C:\git\test-results-dashboard\dash\all-qarj-projects-windows.conf C:\Apache24\conf\extra\httpd-vhosts.conf`
-    - `start notepad++ C:\Apache24\conf\httpd.conf` then uncomment `Include conf/extra/httpd-vhosts.conf`
-    - `mod_wsgi-express module-config` then copy the output to httpd.conf after the #LoadModule section
-    - `C:\Apache24\bin\httpd -k restart`
+From Admin terminal (port 80 will need to be free for this to work)
+```
+C:\Apache\bin\httpd -k install
+C:\Apache\bin\httpd -k start
+```
 
-- Note - the output from `mod_wsgi-express module-config` will look a bit like:
+## Install mod_wsgi-express
+
+Follow instructions exactly, and do not mix 32 and 64 bit!
+
+Microsoft Visual C++ 14.0 build tools are required, you install them from the Visual Studio 2017 Build Tools
+- https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017 - choose install "Build Tools for Visual Studio 2017"
+- Run the installer, click `Visual C++ build tools` (top left option) then the check boxes for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
+- You might need to reboot
+
+Ensure you have Python 3.6.x or higher 32-bit version installed (default from Python.org).
+Do not install 64 bit. 
+
+Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
+- Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
+
+If Apache is not installed at a common location, then specify it
+```
+set "MOD_WSGI_APACHE_ROOTDIR=D:\Apache24"
+```
+
+Finally it is possible to install mod_wsgi
+```
+pip install mod_wsgi
+```
+
+## Configure Django to use Apache
+
+```
+copy C:\git\test-results-dashboard\dash\all-qarj-projects-windows.conf C:\Apache24\conf\extra\httpd-vhosts.conf
+start notepad++ C:\Apache24\conf\httpd.conf
+```
+
+Now uncomment the line `Include conf/extra/httpd-vhosts.conf`, then save.
+
+Keep the file open, there is another change to make.
+
+First
+```
+mod_wsgi-express module-config
+```
+
+then copy the output to httpd.conf after the #LoadModule section
+
+Now save & close the file.
+
+Restart the Apache server
+```
+C:\Apache24\bin\httpd -k restart
+```
+
+Note - the output from `mod_wsgi-express module-config` will look a bit like
 ```
 LoadFile "c:/python36/python36.dll"
 LoadModule wsgi_module "c:/python36/lib/site-packages/mod_wsgi/server/mod_wsgi.cp36-win32.pyd"
 WSGIPythonHome "c:/python36"
 ```
 
-- Create a dashboard and load some test data
+## Create a dashboard and load some test data
 ```
 cd test-results-dashboard
 python new_dashboard_with_test_data_(will_erase_all).py
 ```
 
-- Verify with url: http://localhost/dash/results
+Verify with url: http://localhost/dash/results
 
-Debug
+## Debug
 ```
 start notepad++ /Apache24/conf/extra/httpd-vhosts.conf
 start notepad++ /Apache24/logs/error.log
 start notepad++ /Apache24/logs/access.log
 ```    
     
-## Development Environment Setup - Windows
+# Development Environment Setup - Windows
 
-### Start the server
+This info is only need for further project development.
+
+## Start the Django development server
 ```
 cd dash
 python manage.py runserver
 ```
 
-### Run the test-results-dashboard Django unit tests
+## Run the test-results-dashboard Django unit tests
 
 ```
 cd dash
@@ -160,43 +268,16 @@ python manage.py test results
 
 The server does not need to be running for the unit tests.
 
-## Use the Test Results Dashboard
 
-These urls assume the Django development server is running.
+# WebImblaze Tests
 
-### Log a test result
-http://127.0.0.1:8000/results/log?test_name=manual%20test&app_name=Apply&test_passed=True&run_name=Manual_Test&run_server=TeamCity&message=stack%20overflow
-
-### View a single test result
-http://127.0.0.1:8000/results/2
-
-### View all runs for an app
-http://127.0.0.1:8000/results/app/Apply
-http://127.0.0.1:8000/results/app/Details
-http://127.0.0.1:8000/results/app/Search
-
-### View results for a run
-http://127.0.0.1:8000/results/run/Demo
-
-### View latest results
-http://127.0.0.1:8000/results/latest
-
-### View latest results for a run server
-http://127.0.0.1:8000/results/latest/TeamCity
-
-### Delete a single test result
-http://127.0.0.1:8000/results/delete/5
-
-### Delete all the runs except for the most recent 50
-http://127.0.0.1:8000/results/delete_oldest_runs_only_keep_newest/50/
-
-## WebImblaze Tests
+There are some higer level WebImblaze tests also.
 
 Run the WebImblaze tests from the project root folder.
 
 WebImblaze and the WebImblaze-Framework need to be first cloned to C:\git
 
-These tests are only for the development server, they will not work when Django is running from Apache.
+These tests target the Django development server, they do not work from the Apache urls.
 
 ```
 perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/start.py.test
@@ -205,7 +286,7 @@ perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/new_dashboar
 perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/load_test_data.py.test
 ```
 
-## Django reference
+# Django reference
 
 https://docs.djangoproject.com/en/2.0/intro/tutorial01/
 
