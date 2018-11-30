@@ -18,7 +18,7 @@ If you have deployed this to Apache, then the {SITE_ROOT} might be like http://m
 
 HTTP GET
 ```
-{SITE_ROOT}log?test_name=ApplyAsNewUser&app_name=Apply&test_passed=False&run_name=Apply_Core_J9ZJK&run_server=TeamCity&message=Stack+Trace+...
+{SITE_ROOT}results/log?test_name=ApplyAsNewUser&app_name=Apply&test_passed=False&run_name=Apply_Core_J9ZJK&run_server=TeamCity&message=Stack+Trace+...
 ```
 
 Parameter   | Example Value
