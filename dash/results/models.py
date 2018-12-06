@@ -11,3 +11,4 @@ class Result(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     message = models.CharField(max_length=200, null=True, blank=True)
+    team_name = models.CharField(max_length=20, default=None, blank=True, null=True)

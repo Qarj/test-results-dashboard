@@ -42,6 +42,7 @@ def log(request):
     result.run_name = request.GET.get('run_name', None)
     result.run_server = request.GET.get('run_server', None)
     result.message = request.GET.get('message', None)
+    result.team_name = request.GET.get('team_name', None)
 
     error = returnErrorMessageIfMandatoryFieldNone('test_name', result.test_name)
     error += returnErrorMessageIfMandatoryFieldNone('app_name', result.app_name)
@@ -172,6 +173,19 @@ class summaryBuilder:
             self.already_appended_item = True
             self.summary += str(value) + ' ' + desc
             return
+
+def team(request, team_name):
+
+    page_title = 'tbd'
+    page_heading = team_name + ' status'
+
+    context = {
+        'page_title': page_title,
+        'page_heading': page_heading,
+    }
+
+    return render(request, 'results/team.html', context)
+
 
 def app(request, app_name, run_server=None):
 

@@ -33,8 +33,8 @@ def my_reverse(viewname, kwargs=None, query_kwargs=None):
 
     return url
 
-def url_for_log(test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message=''):
-    return my_reverse('results:log', query_kwargs={'test_name': test_name, 'app_name': app_name, 'test_passed': test_passed, 'run_name': run_name, 'run_server': run_server, 'message': message})
+def url_for_log(test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message='', team_name='DefaultTeam'):
+    return my_reverse('results:log', query_kwargs={'test_name': test_name, 'app_name': app_name, 'test_passed': test_passed, 'run_name': run_name, 'run_server': run_server, 'message': message, 'team_name': team_name})
 
 class ResultsIndexViewTests(TestCase):
     def test_index(self):
@@ -71,6 +71,10 @@ class AddTestResultTests(TestCase):
             url = reverse('results:run', args=(run_name,))
             return self._get_url(url, debug)
 
+    def get_team(self, team_name, debug=False):
+            url = reverse('results:team', args=(team_name,))
+            return self._get_url(url, debug)
+
     def get_app(self, app_name, run_server='', debug=False):
             if (run_server):
                 url = reverse('results:app', args=(app_name,run_server,))
@@ -86,8 +90,8 @@ class AddTestResultTests(TestCase):
             return response
 
 
-    def log_result(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message=''):
-            url = url_for_log(test_name=test_name, app_name=app_name, run_name=run_name, run_server=run_server, test_passed=test_passed, message=message)
+    def log_result(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message='', team_name="DefaultTeam"):
+            url = url_for_log(test_name=test_name, app_name=app_name, run_name=run_name, run_server=run_server, test_passed=test_passed, message=message, team_name=team_name)
             response = self.client.get(url)
             self.assertContains(response, 'Test logged ok')
 
@@ -773,6 +777,11 @@ class AddTestResultTests(TestCase):
         self.assertContains(self.get_detail(id), '>Duration<')
         self._assertRegex(self.get_detail(id), r'>\d+:\d+:\d+\.\d+<')
 
+    def test_individual_result_shows_team_name(self):
+        id = self.log_result(test_name='Team test', app_name='Details', run_name='Run_abc', run_server='TeamCity', test_passed='pend', team_name='CoolTeam')
+        self.assertContains(self.get_detail(id), '>Team Name<')
+        self.assertContains(self.get_detail(id), 'CoolTeam')
+
     def test_do_not_show_end_and_duration_for_pending_result(self):
         id = self.log_result(test_name='Beaut test', app_name='Details', run_name='Run_abc', run_server='TeamCity', test_passed='pend')
         self._assertRegex(self.get_detail(id), r'<td>End[^~]+><')
@@ -1262,7 +1271,17 @@ class AddTestResultTests(TestCase):
         self.assertTrue(updated_date_modified != original_date_modified)
         #print(updated_date_modified, original_date_modified)
 
+        
+        #
+        # Team View
+        #
 
+
+    def test_get_team_view_shows_team_name_in_page_heading(self):
+        test_result_id = self.log_result(test_name='Team page', app_name='Details', run_name='SuperRun', test_passed='true', team_name='MyTeam')
+        self.assertContains(self.get_team('MyTeam'), 'MyTeam status')
+
+		
 ## MVP+:
 
 ## Phase II

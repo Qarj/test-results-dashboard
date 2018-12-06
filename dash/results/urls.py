@@ -19,6 +19,9 @@ urlpatterns = [
     # ex: /results/app/My_App/
     path('app/<app_name>/', views.app, name='app'),
 
+    # ex: /results/team/My_Team/
+    path('team/<team_name>/', views.team, name='team'),
+
     # ex: /results/app/My_App/TeamCity/
     path('app/<app_name>/<run_server>/', views.app, name='app'),
 
