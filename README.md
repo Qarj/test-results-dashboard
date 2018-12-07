@@ -122,7 +122,7 @@ sudo git clone https://github.com/Qarj/test-results-dashboard
 
 Set permissions so the Apache user can access the project:
 ```
-cd test-results-dashboard
+cd /var/www/dash/test-results-dashboard
 sudo chmod 777 dash
 sudo chmod 777 dash/results/migrations
 ```
