@@ -227,16 +227,22 @@ Restart the Apache server
 C:\Apache24\bin\httpd -k restart
 ```
 
-Note - the output from `mod_wsgi-express module-config` will look a bit like
+Note 1 - the output from `mod_wsgi-express module-config` will look a bit like
 ```
 LoadFile "c:/python36/python36.dll"
 LoadModule wsgi_module "c:/python36/lib/site-packages/mod_wsgi/server/mod_wsgi.cp36-win32.pyd"
 WSGIPythonHome "c:/python36"
 ```
 
+Note 2 - if not running on port 80, then `C:\Apache24\conf\httpd.conf` will need to be changed
+to specify the port.
+```
+<VirtualHost *:8747>
+```
+
 ## Create a dashboard and load some test data
 ```
-cd test-results-dashboard
+cd /git/test-results-dashboard
 python new_dashboard_with_test_data_(will_erase_all).py
 ```
 
