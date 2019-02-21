@@ -7,6 +7,7 @@ from django.utils.http import urlencode
 from .models import Result
 
 import re
+import tempfile
 
 #
 # Test Helpers
@@ -35,6 +36,9 @@ def my_reverse(viewname, kwargs=None, query_kwargs=None):
 
 def url_for_log(test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message='', team_name='DefaultTeam'):
     return my_reverse('results:log', query_kwargs={'test_name': test_name, 'app_name': app_name, 'test_passed': test_passed, 'run_name': run_name, 'run_server': run_server, 'message': message, 'team_name': team_name})
+
+def url_for_log_file(test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", name='DefaultName.txt', desc='Stack Trace'):
+    return my_reverse('results:log_file', query_kwargs={'test_name': test_name, 'app_name': app_name, 'run_name': run_name, 'name': name, 'desc': desc})
 
 class ResultsIndexViewTests(TestCase):
     def test_index(self):
@@ -99,6 +103,25 @@ class AddTestResultTests(TestCase):
             test_result_id = m.group(1)
             url = reverse('results:detail', args=(test_result_id,))
             return test_result_id
+
+#https://stackoverflow.com/questions/18299307/django-test-how-to-send-a-http-post-multipart-with-json
+#https://stackoverflow.com/questions/3924117/how-to-use-tempfile-namedtemporaryfile-in-python
+    def log_file(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", name='test.txt', desc="Default Message"):
+        url = url_for_log_file(test_name=test_name, app_name=app_name, run_name=run_name, name=name, desc=desc)
+        with tempfile.NamedTemporaryFile() as f:
+            f.write('Some text context')
+            f.flush()
+            form = {
+                "file": f,
+                "info": 'some other context',
+            }
+            response = self.client.post(url, data=form)
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'File logged ok')
+
+        m = re.search(r"test_file_url is ([^\v]+)", response.content.decode('utf-8'))
+        test_file_url = m.group(1)
+        return test_file_url
 
     def number_of_instances(self, response, target):
         return response.content.decode('utf-8').count(target)
@@ -775,7 +798,7 @@ class AddTestResultTests(TestCase):
         id = self.log_result(test_name='Beaut test', app_name='Details', run_name='Run_abc', run_server='TeamCity', test_passed='pend')
         id = self.log_result(test_name='Beaut test', app_name='Details', run_name='Run_abc', run_server='TeamCity', test_passed='fail')
         self.assertContains(self.get_detail(id), '>Duration<')
-        self._assertRegex(self.get_detail(id), r'>\d+:\d+:\d+\.\d+<')
+        self._assertRegex(self.get_detail(id), r'>\d+:\d+:\d+\.?\d+<')
 
     def test_individual_result_shows_team_name(self):
         id = self.log_result(test_name='Team test', app_name='Details', run_name='Run_abc', run_server='TeamCity', test_passed='pend', team_name='CoolTeam')
@@ -1270,12 +1293,20 @@ class AddTestResultTests(TestCase):
         self.assertTrue(len(updated_date_modified) > 0)
         self.assertTrue(updated_date_modified != original_date_modified)
         #print(updated_date_modified, original_date_modified)
-
         
+
+        #
+        # Log files
+        #
+
+    def test_can_log_simple_txt_file(self):
+        result = self.log_file(test_name='FileLog', app_name='Assets', run_name='RunFile', desc='stack trace')
+        self.assertContains(result, 'File logged ok')
+
+
         #
         # Team View
         #
-
 
     def test_get_team_view_shows_team_name_in_page_heading(self):
         test_result_id = self.log_result(test_name='Team page', app_name='Details', run_name='SuperRun', test_passed='true', team_name='MyTeam')

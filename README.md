@@ -30,6 +30,13 @@ run_name    | Apply_Core_J9ZJK
 run_server  | TeamCity
 message     | Stack+Trace+...
 
+## Upload a file for a test result
+
+HTTP POST
+```
+{SITE_ROOT}results/log_file?test_name=ApplyAsNewUser&app_name=Apply&run_name=Apply_Core_J9ZJK&desc=Final+Screenshot
+```
+
 ## View all runs for an app
 
 ```
