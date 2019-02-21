@@ -1,0 +1,20 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if error %}
+    <h4>{{error}}</h4>
+{% else %}
+    <h2>{{ page_heading }}</h2>
+    <p>File name: {{ name }}</p>
+    <p>File desc: {{ desc }}</p>
+    <p>test_file_url is {{ url }}</p>
+{% endif %}
+
+ {% if content %}
+ <p></p>
+ <p>File content: {{ content }}</p>
+ {% endif %}
+
+
+{% endblock %}

@@ -109,19 +109,22 @@ class AddTestResultTests(TestCase):
     def log_file(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", name='test.txt', desc="Default Message"):
         url = url_for_log_file(test_name=test_name, app_name=app_name, run_name=run_name, name=name, desc=desc)
         with tempfile.NamedTemporaryFile() as f:
-            f.write('Some text context')
+            f.write(b'Some file content')
             f.flush()
+            f.seek(0)
             form = {
                 "file": f,
-                "info": 'some other context',
+                "info": 'Some other content',
             }
             response = self.client.post(url, data=form)
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, 'File logged ok')
 
-        m = re.search(r"test_file_url is ([^\v]+)", response.content.decode('utf-8'))
-        test_file_url = m.group(1)
-        return test_file_url
+        return response
+
+    def get_test_file_url(self, response):
+        m = re.search(r"test_file_url is ([^<]+)", response.content.decode('utf-8'))
+        return m.group(1)
 
     def number_of_instances(self, response, target):
         return response.content.decode('utf-8').count(target)
@@ -1300,8 +1303,14 @@ class AddTestResultTests(TestCase):
         #
 
     def test_can_log_simple_txt_file(self):
-        result = self.log_file(test_name='FileLog', app_name='Assets', run_name='RunFile', desc='stack trace')
+        result = self.log_file(test_name='FileLog', app_name='Assets', run_name='RunFile', name='test.test', desc='stack trace')
         self.assertContains(result, 'File logged ok')
+        self.assertContains(result, 'File name: test.test')
+        self.assertContains(result, 'File desc: stack trace')
+        self.assertContains(result, 'File content: Some file content')
+
+
+    # Does test need to already be logged an have an id?
 
 
         #

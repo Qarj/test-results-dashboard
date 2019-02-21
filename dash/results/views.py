@@ -7,6 +7,7 @@ from django.urls import reverse
 from itertools import chain
 
 from .models import Result
+from .models import Artifact
 
 def index(request):
     return latest(request)
@@ -74,6 +75,48 @@ def log(request):
     }
 
     return render(request, 'results/log.html', context)
+
+def log_file(request):
+    if request.method != 'POST':
+        return HttpResponse('Must be a post request')
+
+#    print('Decode', request.body.decode("utf-8"))
+# https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
+# https://gearheart.io/blog/how-to-upload-files-with-django/
+
+    f = request.FILES['file']
+    print ('Infos', f)
+    fragment = ''
+    for chunk in f.chunks():
+        fragment = chunk.decode("utf-8")
+        print(chunk)
+
+    artifact = Artifact( test_name = request.GET.get('test_name', None) )
+    artifact.app_name = request.GET.get('app_name', None)
+    artifact.run_name = request.GET.get('run_name', None)
+    artifact.name = request.GET.get('name', None)
+    artifact.desc = request.GET.get('desc', None)
+
+    content = ''
+    if artifact.name == 'test.test':
+        content = request.POST.get('info', None)
+        print('My content', content)
+
+    page_title = 'Log file'
+    page_heading = 'File logged ok'
+    error = ''
+    url = 'http://example.com/test?value=testing123'
+    context = {
+        'page_title': page_title,
+        'page_heading': page_heading,
+        'url': url,
+        'name': artifact.name,
+        'desc': artifact.desc,
+        'content': fragment,
+        'error': error,
+    }
+    return render(request, 'results/log_file.html', context)
+
 
 def _convert_test_passed_text_to_true_false_or_none_meaning_pend(test_passed_text):
     if (test_passed_text == None):
