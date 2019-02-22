@@ -1363,6 +1363,10 @@ class AddTestResultTests(TestCase):
         id = self.log_result(test_name='HTML file', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
         self.assertContains(self.get_detail(id, debug=True), '>test.html</a>')
 
+    def test_can_see_img_src_link_to_jpg_file_on_details(self):
+        result = self.log_file(test_name='JPG file', app_name='Details', run_name='Run_bcd', name='test.jpg', desc='jpg file', debug=False)
+        id = self.log_result(test_name='JPG file', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
+        self.assertContains(self.get_detail(id, debug=True), 'alt="jpg file"')
 
         #
         # Team View

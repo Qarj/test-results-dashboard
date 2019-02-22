@@ -56,18 +56,15 @@
             <!-- ~ End Row -->
         </tr>
     </table>
-
-
     {% for artifact in artifacts %}
-    <a href="url">{{artifact.name}}</a>
+        {% if artifact.image %}
+            <img src="{{artifact.url}}">{{artifact.name}} alt="{{artifact.desc}}"</a>
+        {% else %}
+            <a href="{{artifact.url}}">{{artifact.name}}</a>
+        {% endif %}
     {% endfor %}
-
-
 {% else %}
     <p>No results are available.</p>
     <h4><a href="{% url 'results:latest' %}" class="normal">See all the latest results here</a></h4>
-
 {% endif %}
-
-
 {% endblock %}

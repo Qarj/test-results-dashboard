@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from itertools import chain
 
+from django.utils.http import urlencode
+
 from .models import Result
 from .models import Artifact
 from .forms import ArtifactForm
@@ -37,18 +39,10 @@ def detail(request, result_id):
         except Result.DoesNotExist:
             artifactsLab = None
 
-    # artifacts = []
-    # if artifactsLab:
-    #     for artifact in artifactsLab:
-    #         artifacts.append( {
-    #             'name': artifact.name,
-    #             'something': 'something',
-    #         })
-    #     for artifact in artifactsLab:
-    #         print(artifact.name)
-    #         print(result.test_name)
-    #     print (artifacts)
-    #     print (result)
+    if artifactsLab:
+        for artifact in artifactsLab:
+            artifact.url = my_reverse('results:get_file', query_kwargs={'stored_file_name': artifact.stored_file_name})
+            artifact.image = _is_image(artifact.name)
 
     context = {
         'page_title': page_title,
@@ -58,6 +52,21 @@ def detail(request, result_id):
     }
 
     return render(request, 'results/detail.html', context)
+
+
+def _is_image(filename):
+    if 'image' in _get_mime_type(filename):
+        return True
+    return False
+
+def my_reverse(viewname, kwargs=None, query_kwargs=None):
+    url = reverse(viewname, kwargs=kwargs)
+
+    if query_kwargs:
+        return u'%s?%s' % (url, urlencode(query_kwargs))
+
+    return url
+
 
 def log(request):
     result = Result( test_name = request.GET.get('test_name', None) )
@@ -138,7 +147,7 @@ def log_file(request):
         for chunk in f.chunks():
             content = chunk.decode("utf-8")
 
-    artifact.name = uploaded_file_url # this will be full relative path of (potentially) renamed file due to conflict
+    artifact.stored_file_name = uploaded_file_url # this will be full relative path of (potentially) renamed file due to conflict
     artifact.save()
 
     page_title = 'Log file'
@@ -150,6 +159,7 @@ def log_file(request):
         'page_heading': page_heading,
         'url': url,
         'name': artifact.name,
+        'stored_file_name': artifact.stored_file_name,
         'desc': artifact.desc,
         'content': content,
         'error': error,
