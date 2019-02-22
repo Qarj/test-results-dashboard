@@ -19,5 +19,6 @@ class Artifact(models.Model):
     run_name = models.CharField(max_length=20)
     name = models.CharField(max_length=100)
     desc = models.CharField(max_length=200)
+    document = models.FileField(upload_to='documents/', default=None)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

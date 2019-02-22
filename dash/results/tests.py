@@ -37,9 +37,6 @@ def my_reverse(viewname, kwargs=None, query_kwargs=None):
 def url_for_log(test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message='', team_name='DefaultTeam'):
     return my_reverse('results:log', query_kwargs={'test_name': test_name, 'app_name': app_name, 'test_passed': test_passed, 'run_name': run_name, 'run_server': run_server, 'message': message, 'team_name': team_name})
 
-def url_for_log_file(test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", name='DefaultName.txt', desc='Stack Trace'):
-    return my_reverse('results:log_file', query_kwargs={'test_name': test_name, 'app_name': app_name, 'run_name': run_name, 'name': name, 'desc': desc})
-
 class ResultsIndexViewTests(TestCase):
     def test_index(self):
         """
@@ -104,21 +101,29 @@ class AddTestResultTests(TestCase):
             url = reverse('results:detail', args=(test_result_id,))
             return test_result_id
 
-#https://stackoverflow.com/questions/18299307/django-test-how-to-send-a-http-post-multipart-with-json
-#https://stackoverflow.com/questions/3924117/how-to-use-tempfile-namedtemporaryfile-in-python
-    def log_file(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", name='test.txt', desc="Default Message"):
-        url = url_for_log_file(test_name=test_name, app_name=app_name, run_name=run_name, name=name, desc=desc)
+    #https://stackoverflow.com/questions/18299307/django-test-how-to-send-a-http-post-multipart-with-json
+    #https://stackoverflow.com/questions/3924117/how-to-use-tempfile-namedtemporaryfile-in-python
+    def log_file(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", name='test.txt', desc="Default File Desc", debug=False):
+        url = reverse('results:log_file')
         with tempfile.NamedTemporaryFile() as f:
             f.write(b'Some file content')
             f.flush()
             f.seek(0)
             form = {
-                "file": f,
-                "info": 'Some other content',
+                'test_name': test_name,
+                'app_name': app_name,
+                'run_name': run_name,
+                'name': name,
+                'desc': desc,
+                'document': f,
             }
             response = self.client.post(url, data=form)
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, 'File logged ok')
+
+        if (debug):
+            print('\nDebug URL:', url)
+            print(response.content.decode('utf-8'), '\n')
 
         return response
 
@@ -1303,14 +1308,20 @@ class AddTestResultTests(TestCase):
         #
 
     def test_can_log_simple_txt_file(self):
-        result = self.log_file(test_name='FileLog', app_name='Assets', run_name='RunFile', name='test.test', desc='stack trace')
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestRunName', name='test.test', desc='unit test file upload', debug=True)
         self.assertContains(result, 'File logged ok')
-        self.assertContains(result, 'File name: test.test')
-        self.assertContains(result, 'File desc: stack trace')
+        self.assertContains(result, 'File name: artifacts/UnitTestApp/UnitTestRunName/UnitTestName/test')
+        self.assertContains(result, 'File desc: unit test file upload')
         self.assertContains(result, 'File content: Some file content')
 
+    def test_can_read_logged_file_content(self):
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', desc='read file content')
+        url = self.get_test_file_url(result)
+        result = self._get_url(url)
+        self.assertContains(result, 'Some file content')
 
     # Does test need to already be logged an have an id?
+    # Test for form on Get
 
 
         #

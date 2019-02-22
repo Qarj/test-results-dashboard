@@ -1,0 +1,17 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{% if error %}
+    <h4>{{error}}</h4>
+{% else %}
+    <h2>{{ page_heading }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+{% endif %}
+
+<p><a href="{% url 'results:index' %}">Return to home</a></p>
+
+{% endblock %}

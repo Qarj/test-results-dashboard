@@ -8,6 +8,9 @@ from itertools import chain
 
 from .models import Result
 from .models import Artifact
+from .forms import ArtifactForm
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
 
 def index(request):
     return latest(request)
@@ -76,31 +79,47 @@ def log(request):
 
     return render(request, 'results/log.html', context)
 
-def log_file(request):
-    if request.method != 'POST':
-        return HttpResponse('Must be a post request')
 
-#    print('Decode', request.body.decode("utf-8"))
 # https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
 # https://gearheart.io/blog/how-to-upload-files-with-django/
+@csrf_exempt
+def log_file(request):
+    if request.method != 'POST':
+        return _log_file_form(request)
 
-    f = request.FILES['file']
-    print ('Infos', f)
-    fragment = ''
-    for chunk in f.chunks():
-        fragment = chunk.decode("utf-8")
-        print(chunk)
+    # form = ArtifactForm(request.POST, request.FILES)
+    # if form.is_valid():
+    #     form.save()
 
-    artifact = Artifact( test_name = request.GET.get('test_name', None) )
-    artifact.app_name = request.GET.get('app_name', None)
-    artifact.run_name = request.GET.get('run_name', None)
-    artifact.name = request.GET.get('name', None)
-    artifact.desc = request.GET.get('desc', None)
+    artifact = Artifact( test_name = request.POST.get('test_name', None) )
+    artifact.app_name = request.POST.get('app_name', None)
+    artifact.run_name = request.POST.get('run_name', None)
+    artifact.name = request.POST.get('name', None)
+    artifact.desc = request.POST.get('desc', None)
 
+    error = returnErrorMessageIfMandatoryFieldNone('test_name', artifact.test_name)
+    error += returnErrorMessageIfMandatoryFieldNone('app_name', artifact.app_name)
+    error += returnErrorMessageIfMandatoryFieldNone('run_name', artifact.run_name)
+    error += returnErrorMessageIfMandatoryFieldNone('name', artifact.name)
+    error += returnErrorMessageIfMandatoryFieldNone('desc', artifact.desc)
+    if (error):
+        return render(request, 'results/log_file.html', { 'page_title': 'Error', 'error': error })
+
+    upload = request.FILES['document']
+    fs = FileSystemStorage()
+    filename = fs.save(f'artifacts/{artifact.app_name}/{artifact.run_name}/{artifact.test_name}/{artifact.name}', upload)
+    uploaded_file_url = fs.url(filename)        
+    print('uploaded url', uploaded_file_url)
+
+    # this section proves to a unit test that the file was uploaded
     content = ''
     if artifact.name == 'test.test':
-        content = request.POST.get('info', None)
-        print('My content', content)
+        f = request.FILES['document']
+        for chunk in f.chunks():
+            content = chunk.decode("utf-8")
+
+    artifact.name = uploaded_file_url # this will be full relative path of (potentially) renamed file due to conflict
+    artifact.save()
 
     page_title = 'Log file'
     page_heading = 'File logged ok'
@@ -112,11 +131,19 @@ def log_file(request):
         'url': url,
         'name': artifact.name,
         'desc': artifact.desc,
-        'content': fragment,
+        'content': content,
         'error': error,
     }
     return render(request, 'results/log_file.html', context)
 
+def _log_file_form(request):
+    form = ArtifactForm()
+    context = { 
+        'page_title': 'Log file',
+        'page_heading': 'Upload test artifact',
+        'form': form,
+    }
+    return render(request, 'results/log_file_form.html', context)
 
 def _convert_test_passed_text_to_true_false_or_none_meaning_pend(test_passed_text):
     if (test_passed_text == None):
