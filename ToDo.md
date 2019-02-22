@@ -1,6 +1,7 @@
 # test-results-dashboard Task list
 
 ## Phase II
+- Clean up artifacts
 - Fully aync to log test result - happens on other thread, prove it with delay parameter
 - Aync to view results, does not block anything, prove that you can view results and log at same time with delay parameter
 - Show results by Tribe

@@ -145,6 +145,20 @@ def _log_file_form(request):
     }
     return render(request, 'results/log_file_form.html', context)
 
+def get_file(request):
+    stored_file_name = request.GET.get('stored_file_name', None)
+    print('Stored file name according to get_file is', stored_file_name)
+    with open(stored_file_name, 'rb') as content_file:
+         content = content_file.read()
+    # fs = FileSystemStorage()
+    # f = fs.open(stored_file_name, mode=None)
+    # for chunk in f.chunks():
+    #     content = chunk.decode("utf-8")
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+    return HttpResponse(content, content_type="image/jpeg")
+    # return HttpResponse('Nothing yet')
+
+
 def _convert_test_passed_text_to_true_false_or_none_meaning_pend(test_passed_text):
     if (test_passed_text == None):
         return None

@@ -16,6 +16,9 @@ urlpatterns = [
     # ex: /results/log_file/?test_name=simple%20test
     path('log_file/', views.log_file, name='log_file'),
 
+    # ex: /results/get_file/?stored_file_name=abc.txt
+    path('get_file/', views.get_file, name='get_file'),
+
     # ex: /results/run/My_Run/
     path('run/<run_name>/', views.run, name='run'),
 

@@ -127,8 +127,13 @@ class AddTestResultTests(TestCase):
 
         return response
 
-    def get_test_file_url(self, response):
-        m = re.search(r"test_file_url is ([^<]+)", response.content.decode('utf-8'))
+    def get_file(self, stored_file_name, debug=False):
+        url = my_reverse('results:get_file', query_kwargs={'stored_file_name': stored_file_name})
+        print('Generated url is',url)
+        return self._get_url(url, debug)
+
+    def get_stored_file_name(self, response):
+        m = re.search(r"Stored file name: ([^<]+)", response.content.decode('utf-8'))
         return m.group(1)
 
     def number_of_instances(self, response, target):
@@ -1308,16 +1313,17 @@ class AddTestResultTests(TestCase):
         #
 
     def test_can_log_simple_txt_file(self):
-        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestRunName', name='test.test', desc='unit test file upload', debug=True)
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestRunName', name='test.test', desc='unit test file upload', debug=False)
         self.assertContains(result, 'File logged ok')
-        self.assertContains(result, 'File name: artifacts/UnitTestApp/UnitTestRunName/UnitTestName/test')
+        self.assertContains(result, 'Stored file name: artifacts/UnitTestApp/UnitTestRunName/UnitTestName/test')
         self.assertContains(result, 'File desc: unit test file upload')
         self.assertContains(result, 'File content: Some file content')
 
     def test_can_read_logged_file_content(self):
-        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', desc='read file content')
-        url = self.get_test_file_url(result)
-        result = self._get_url(url)
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', desc='read file content', debug=True)
+        stored_file_name = self.get_stored_file_name(result)
+        print('Stored File name is', stored_file_name)
+        result = self.get_file(stored_file_name, debug=True)
         self.assertContains(result, 'Some file content')
 
     # Does test need to already be logged an have an id?
