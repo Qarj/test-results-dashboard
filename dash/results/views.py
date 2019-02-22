@@ -12,6 +12,8 @@ from .forms import ArtifactForm
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
 
+import os
+
 def index(request):
     return latest(request)
 
@@ -109,7 +111,6 @@ def log_file(request):
     fs = FileSystemStorage()
     filename = fs.save(f'artifacts/{artifact.app_name}/{artifact.run_name}/{artifact.test_name}/{artifact.name}', upload)
     uploaded_file_url = fs.url(filename)        
-    print('uploaded url', uploaded_file_url)
 
     # this section proves to a unit test that the file was uploaded
     content = ''
@@ -147,17 +148,23 @@ def _log_file_form(request):
 
 def get_file(request):
     stored_file_name = request.GET.get('stored_file_name', None)
-    print('Stored file name according to get_file is', stored_file_name)
     with open(stored_file_name, 'rb') as content_file:
          content = content_file.read()
-    # fs = FileSystemStorage()
-    # f = fs.open(stored_file_name, mode=None)
-    # for chunk in f.chunks():
-    #     content = chunk.decode("utf-8")
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-    return HttpResponse(content, content_type="image/jpeg")
-    # return HttpResponse('Nothing yet')
+    return HttpResponse(content, content_type=_get_mime_type(stored_file_name))
 
+def _get_mime_type(path):
+    filename, file_extension = os.path.splitext(path)
+    file_extension = file_extension.lower()
+    if file_extension == '.jpg':
+        return 'image/jpeg'
+    if file_extension == '.png':
+        return 'image/png'
+    if file_extension == '.html':
+        return 'text/html'
+    if file_extension == '.json':
+        return 'application/json'
+    return 'text/plain'
 
 def _convert_test_passed_text_to_true_false_or_none_meaning_pend(test_passed_text):
     if (test_passed_text == None):

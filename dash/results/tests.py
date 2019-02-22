@@ -129,7 +129,6 @@ class AddTestResultTests(TestCase):
 
     def get_file(self, stored_file_name, debug=False):
         url = my_reverse('results:get_file', query_kwargs={'stored_file_name': stored_file_name})
-        print('Generated url is',url)
         return self._get_url(url, debug)
 
     def get_stored_file_name(self, response):
@@ -1320,11 +1319,35 @@ class AddTestResultTests(TestCase):
         self.assertContains(result, 'File content: Some file content')
 
     def test_can_read_logged_file_content(self):
-        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', desc='read file content', debug=True)
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', desc='read file content', debug=False)
         stored_file_name = self.get_stored_file_name(result)
-        print('Stored File name is', stored_file_name)
-        result = self.get_file(stored_file_name, debug=True)
+        result = self.get_file(stored_file_name, debug=False)
         self.assertContains(result, 'Some file content')
+        self.assertRegex(result['content-type'], 'text/plain')
+
+    def test_can_serve_image_jpeg_mime_type(self):
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.jpg', desc='read file content', debug=False)
+        stored_file_name = self.get_stored_file_name(result)
+        result = self.get_file(stored_file_name, debug=False)
+        self.assertRegex(result['content-type'], 'image/jpeg')
+
+    def test_can_serve_html_mime_type(self):
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.html', desc='read file content', debug=False)
+        stored_file_name = self.get_stored_file_name(result)
+        result = self.get_file(stored_file_name, debug=False)
+        self.assertRegex(result['content-type'], 'text/html')
+
+    def test_can_serve_image_png_mime_type(self):
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.pNg', desc='read file content', debug=False)
+        stored_file_name = self.get_stored_file_name(result)
+        result = self.get_file(stored_file_name, debug=False)
+        self.assertRegex(result['content-type'], 'image/png')
+
+    def test_can_serve_json_mime_type(self):
+        result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.JsoN', desc='read file content', debug=False)
+        stored_file_name = self.get_stored_file_name(result)
+        result = self.get_file(stored_file_name, debug=False)
+        self.assertRegex(result['content-type'], 'application/json')
 
     # Does test need to already be logged an have an id?
     # Test for form on Get
