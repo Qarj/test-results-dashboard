@@ -91,10 +91,14 @@ class AddTestResultTests(TestCase):
             return response
 
 
-    def log_result(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message='', team_name="DefaultTeam"):
+    def log_result(self, test_name="Default test name", app_name="DefaultApp", run_name="DefaultRun", run_server="TeamCity", test_passed=False, message='', team_name="DefaultTeam", debug=False):
             url = url_for_log(test_name=test_name, app_name=app_name, run_name=run_name, run_server=run_server, test_passed=test_passed, message=message, team_name=team_name)
             response = self.client.get(url)
             self.assertContains(response, 'Test logged ok')
+
+            if (debug):
+                print('\nDebug URL:', url)
+                print(response.content.decode('utf-8'), '\n')
 
             m = re.search(r"test_result_id is (\d+)", response.content.decode('utf-8'))
             test_result_id = m.group(1)
@@ -1308,7 +1312,7 @@ class AddTestResultTests(TestCase):
         
 
         #
-        # Log files
+        # Log files and read back file directly
         #
 
     def test_can_log_simple_txt_file(self):
@@ -1349,8 +1353,15 @@ class AddTestResultTests(TestCase):
         result = self.get_file(stored_file_name, debug=False)
         self.assertRegex(result['content-type'], 'application/json')
 
-    # Does test need to already be logged an have an id?
-    # Test for form on Get
+
+        #
+        # Files logged to a test are referenced on the details view
+        #
+
+    def test_can_see_link_to_html_file_on_details(self):
+        result = self.log_file(test_name='HTML file', app_name='Details', run_name='Run_bcd', name='test.html', desc='html file', debug=False)
+        id = self.log_result(test_name='HTML file', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
+        self.assertContains(self.get_detail(id, debug=True), '>test.html</a>')
 
 
         #

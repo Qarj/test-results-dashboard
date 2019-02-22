@@ -25,17 +25,36 @@ def detail(request, result_id):
 
     page_title = 'Result id ' + str(result_id)
     page_heading = page_title
+    artifactsLab = None
     if (result):
         result.test_status = _get_test_status(result.test_passed)
         result.duration = result.date_modified - result.date_created
         if (result.test_status == 'pend'):
             result.date_modified = ''
             result.duration = ''
+        try:
+            artifactsLab = Artifact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
+        except Result.DoesNotExist:
+            artifactsLab = None
+
+    # artifacts = []
+    # if artifactsLab:
+    #     for artifact in artifactsLab:
+    #         artifacts.append( {
+    #             'name': artifact.name,
+    #             'something': 'something',
+    #         })
+    #     for artifact in artifactsLab:
+    #         print(artifact.name)
+    #         print(result.test_name)
+    #     print (artifacts)
+    #     print (result)
 
     context = {
         'page_title': page_title,
         'page_heading': page_heading,
         'result': result,
+        'artifacts': artifactsLab,
     }
 
     return render(request, 'results/detail.html', context)
