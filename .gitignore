@@ -1,5 +1,7 @@
 # This project
 artifacts/
+artefacts/
+migrations/
 
 # Python byte-compiled
 __pycache__/

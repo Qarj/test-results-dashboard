@@ -9,7 +9,7 @@ def start_server():
         #print ("Server was already started")
         return
 
-    os.system('start "Test Results Dashboard server" /I python dash/manage.py runserver')
+    os.system(f'start "Test Results Dashboard server" /I python dash/manage.py runserver {port}')
     
     attempts = 1
     max_attempts = 5
@@ -23,7 +23,7 @@ def start_server():
 
 def server_is_running():
     try:
-        urllib.request.urlopen("http://" + host_name + port + path).read()
+        urllib.request.urlopen(f'http://{host_name}:{port}{path}').read()
     except ConnectionRefusedError:
         #print('Connection Refused')
         return False
@@ -33,7 +33,7 @@ def server_is_running():
     return True
 
 host_name = "127.0.0.1"
-port = ":8000"
+port = "8811"
 path = "/results"
 
 if (not os.path.isfile("dash/results/migrations/0001_initial.py")):
@@ -42,4 +42,4 @@ if (not os.path.isfile("dash/results/migrations/0001_initial.py")):
 start_server()
 
 if (server_is_running()):
-    print ("Test Results Dashboard is running at http://" + host_name + port + path)
+    print (f'Test Results Dashboard is running at http://{host_name}:{port}{path}')

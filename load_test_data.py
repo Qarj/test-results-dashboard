@@ -3,18 +3,35 @@
 version="0.1.0"
 
 import urllib.request, urllib.parse, random, string
+import requests
 
 final_results = []
 
 def log_test_result(number=1, app="DefaultApp", run_name="DefaultRun", test_passed=True, run_server='TeamCity', message=''):
-    urllib.request.urlopen("http://" + host_name + port
-        + "/results/log/?test_name=acceptance%20test%20" + str(number)
+    test_name = 'acceptance%20test%20' + str(number)
+    host = f'http://{host_name}:{port}'
+    urllib.request.urlopen(host
+        + '/results/log/?test_name=' + test_name
         + "&app_name=" + app
         + "&test_passed=" + str(test_passed)
         + "&run_name=" + run_name
         + "&run_server=" + run_server
         + "&message=" + urllib.parse.quote_plus(message)
         ).read()
+    response = requests.post(
+        f'{host}/results/log_file/',
+        files=_build_mulitpart_form_data('screenshot.png', 'tests/assets/', test_name, app, run_name, 'Screen shot when error occurred')
+    )
+
+def _build_mulitpart_form_data(filename, path, test_name, app, run_name, desc):
+    return {
+        'test_name': (None, test_name),
+        'app_name': (None, app),
+        'run_name': (None, run_name),
+        'name': (None, filename),
+        'desc': (None, desc),
+        'document': (filename, open(f'{path}{filename}', 'rb')),
+    }
 
 def load_data_for(app="DefaultApp", run_name="DefaultRun", random_status=False, run_server='TeamCity'):
     global final_results
@@ -50,7 +67,7 @@ def get_run():
     return 'TestRun_' + rand
 
 host_name = "127.0.0.1"
-port = ":8000"
+port = "8811"
 path = "/results"
 
 load_data_for(app="Search", run_name='Pass_Demo', random_status=True)

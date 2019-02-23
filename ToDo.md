@@ -1,11 +1,14 @@
 # test-results-dashboard Task list
 
 ## Phase II
-- Clean up artifacts
+- Clean up artefacts
 - Fully aync to log test result - happens on other thread, prove it with delay parameter
 - Aync to view results, does not block anything, prove that you can view results and log at same time with delay parameter
 - Show results by Tribe
 - Drill into previous results
+- Tidy up root folder
+    - Linux and Windows should be common
+    - Move to setup / quickstart folder
 
 # Linux Deployment Notes
 

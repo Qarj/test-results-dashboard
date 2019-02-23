@@ -1353,6 +1353,9 @@ class AddTestResultTests(TestCase):
         result = self.get_file(stored_file_name, debug=False)
         self.assertRegex(result['content-type'], 'application/json')
 
+    # Ensure test_name, app_name and run_name can be used as file names 
+    # Artifact to Artefact
+
 
         #
         # Files logged to a test are referenced on the details view

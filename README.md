@@ -34,8 +34,38 @@ message     | Stack+Trace+...
 
 HTTP POST
 ```
-{SITE_ROOT}results/log_file?test_name=ApplyAsNewUser&app_name=Apply&run_name=Apply_Core_J9ZJK&desc=Final+Screenshot
+{SITE_ROOT}results/log_file
 ```
+
+posttype
+```
+multipart/form-data
+```
+
+postbody
+```
+{
+    test_name: 'ApplyAsNewUser',
+    app_name: 'Apply',
+    run_name: 'JZ2K9',
+    name: 'FinalState.jpg',
+    desc: 'Screen shot when error occurred',
+    document: file,
+}
+```
+
+Response fragment
+```
+    <p>Stored file name: artefacts%2fFinalState_8234jsd.jpg</p>
+```
+
+## Download file
+
+HTTP GET
+```
+{SITE_ROOT}results/get_file/?stored_file_name=artefacts%2fFinalState_8234jsd.jpg
+```
+
 
 ## View all runs for an app
 

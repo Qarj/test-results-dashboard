@@ -3,6 +3,7 @@
 version="0.1.0"
 
 import os
+import shutil
 
 def remove_if_exists(file):
     try:
@@ -13,7 +14,12 @@ def remove_if_exists(file):
 os.system('TASKKILL /F /T /FI "WINDOWTITLE eq Test Results Dashboard server"')
 
 remove_if_exists("dash/db.sqlite3")
-remove_if_exists("dash/results/migrations/0001_initial.py")
+shutil.rmtree('dash/results/migrations', ignore_errors=True)
+shutil.rmtree('dash/results/migrations', ignore_errors=True)
+shutil.rmtree('dash/results/migrations', ignore_errors=True)
+shutil.rmtree('artifacts', ignore_errors=True)
+shutil.rmtree('artifacts', ignore_errors=True)
+shutil.rmtree('artifacts', ignore_errors=True)
 
 os.system('python dash/manage.py makemigrations results')
 os.system('python dash/manage.py migrate')
