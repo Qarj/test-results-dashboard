@@ -20,7 +20,7 @@ then from same dir as manage.py:
 python manage.py startapp results
 ```
 
-Enusre in settings.py
+Ensure in settings.py
 ```
 TIME_ZONE = 'UTC'
 ```
@@ -69,7 +69,7 @@ https://dezoito.github.io/2015/09/21/how-to-test-django-applications_pt1.html (S
 from django.test.utils import setup_test_environment
 setup_test_environment()
 
-rom django.test import Client
+from django.test import Client
 client = Client()
 ```
 

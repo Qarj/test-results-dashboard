@@ -1,6 +1,0 @@
-step:                   Load in some test data
-shell:                  cd ../test-results-dashboard & python tests/load_test_data_test_helper.py
-verifypositive1:        Test data loaded ok for Search app
-verifypositive2:        Test data loaded ok for Details app
-verifypositive3:        Test data loaded ok for Apply app
-
