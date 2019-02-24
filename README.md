@@ -63,9 +63,10 @@ Response fragment
 
 HTTP GET
 ```
-{SITE_ROOT}results/get_file/?stored_file_name=artefacts%2fFinalState_8234jsd.jpg
+{SITE_ROOT}results/get_file/?test_name=ApplyAsNewUser&app_name=Apply&run_name=JZ2K9&name=FinalState.jpg
 ```
-
+The files uploaded for a test result will be automatically visible on the individual test details page,
+e.g. `{SITE_ROOT}results/2` for test result `id=2`
 
 ## View all runs for an app
 

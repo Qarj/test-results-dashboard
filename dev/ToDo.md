@@ -5,9 +5,9 @@ x remove test_name, run_name and app_name from Artefact save so we don't need to
 x only load documents on final state in load_test_data.py, not pend
 x load dom example
 x does test file work under Apache - Windows
-- review load scripts for linux and windows
-- does test file work under Apache - Linux
-- update readme for read_file
+x review load scripts for linux and windows
+x does test file work under Apache - Linux
+x update README for read_file
 - logging same asset name twice should overwrite, or not cause errors
 - put assets in table
 - show asset description
