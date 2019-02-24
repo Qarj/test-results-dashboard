@@ -168,11 +168,17 @@ sudo chmod 777 dash/results
 sudo chmod 777 dash/results/migrations
 ```
 
-Initialise the dashboard:
+Initialise the database (or recreate it):
 ```
 cd dev
 python delete_dashboard_then_create_empty.py
 ```
+
+Start the development server
+```
+python start.py
+```
+
 The last command will perform Django SQL migrations, open a new gnome-terminal tab, and load a bunch of test data.
 
 Now close the Django development server (new gnome-terminal tab or window created).
