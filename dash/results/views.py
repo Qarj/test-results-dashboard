@@ -9,8 +9,8 @@ from itertools import chain
 from django.utils.http import urlencode
 
 from .models import Result
-from .models import Artifact
-from .forms import ArtifactForm
+from .models import Artefact
+from .forms import ArtefactForm
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
 
@@ -27,7 +27,7 @@ def detail(request, result_id):
 
     page_title = 'Result id ' + str(result_id)
     page_heading = page_title
-    artifactsLab = None
+    artefactsLab = None
     if (result):
         result.test_status = _get_test_status(result.test_passed)
         result.duration = result.date_modified - result.date_created
@@ -35,26 +35,36 @@ def detail(request, result_id):
             result.date_modified = ''
             result.duration = ''
         try:
-            artifactsLab = Artifact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
+            artefactsLab = Artefact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
         except Result.DoesNotExist:
-            artifactsLab = None
+            artefactsLab = None
 
-    print (result.test_name, result.app_name, result.run_name)
-    if artifactsLab:
-        for artifact in artifactsLab:
-            artifact.url = my_reverse('results:get_file', query_kwargs={'stored_file_name': artifact.stored_file_name})
-            print(artifact.url)
-            artifact.image = _is_image(artifact.name)
+    #print (result.test_name, result.app_name, result.run_name)
+    if artefactsLab:
+        for artefact in artefactsLab:
+            artefact.url = _artefact_url(artefact.test_name, artefact.app_name, artefact.run_name, artefact.name)
+            #print(artefact.url)
+            artefact.image = _is_image(artefact.name)
 
     context = {
         'page_title': page_title,
         'page_heading': page_heading,
         'result': result,
-        'artifacts': artifactsLab,
+        'artefacts': artefactsLab,
     }
 
     return render(request, 'results/detail.html', context)
 
+# /results/get_file/?test_name=test1&app_name=Apply&run_name=Run1&name=screen.jpg
+def _artefact_url(test_name, app_name, run_name, name):
+    return my_reverse('results:get_file',
+        query_kwargs={
+                'test_name': test_name,
+                'app_name': app_name,
+                'run_name': run_name,
+                'name': name,
+            }
+        )
 
 def _is_image(filename):
     if 'image' in _get_mime_type(filename):
@@ -119,70 +129,85 @@ def log_file(request):
     if request.method != 'POST':
         return _log_file_form(request)
 
-    # form = ArtifactForm(request.POST, request.FILES)
-    # if form.is_valid():
-    #     form.save()
+    artefact = Artefact( test_name = request.POST.get('test_name', None) )
+    artefact.app_name = request.POST.get('app_name', None)
+    artefact.run_name = request.POST.get('run_name', None)
+    artefact.name = request.POST.get('name', None)
+    artefact.desc = request.POST.get('desc', None)
 
-    artifact = Artifact( test_name = request.POST.get('test_name', None) )
-    artifact.app_name = request.POST.get('app_name', None)
-    artifact.run_name = request.POST.get('run_name', None)
-    artifact.name = request.POST.get('name', None)
-    artifact.desc = request.POST.get('desc', None)
-
-    error = returnErrorMessageIfMandatoryFieldNone('test_name', artifact.test_name)
-    error += returnErrorMessageIfMandatoryFieldNone('app_name', artifact.app_name)
-    error += returnErrorMessageIfMandatoryFieldNone('run_name', artifact.run_name)
-    error += returnErrorMessageIfMandatoryFieldNone('name', artifact.name)
-    error += returnErrorMessageIfMandatoryFieldNone('desc', artifact.desc)
+    error = returnErrorMessageIfMandatoryFieldNone('test_name', artefact.test_name)
+    error += returnErrorMessageIfMandatoryFieldNone('app_name', artefact.app_name)
+    error += returnErrorMessageIfMandatoryFieldNone('run_name', artefact.run_name)
+    error += returnErrorMessageIfMandatoryFieldNone('name', artefact.name)
+    error += returnErrorMessageIfMandatoryFieldNone('desc', artefact.desc)
     if (error):
         return render(request, 'results/log_file.html', { 'page_title': 'Error', 'error': error })
 
-    upload = request.FILES['document']
-    fs = FileSystemStorage()
-    filename = fs.save(f'artifacts/{artifact.app_name}/{artifact.run_name}/{artifact.test_name}/{artifact.name}', upload)
-    uploaded_file_url = fs.url(filename)        
+    # upload = request.FILES['document']
+    # fs = FileSystemStorage()
+    # filename = fs.save(f'artifacts/{artefact.app_name}/{artefact.run_name}/{artefact.test_name}/{artefact.name}', upload)
+    # uploaded_file_url = fs.url(filename)        
+
+    form = ArtefactForm(request.POST, request.FILES)
+    if form.is_valid():
+        form.save()
 
     # this section proves to a unit test that the file was uploaded
     content = ''
-    if artifact.name == 'test.test':
+    if artefact.name == 'test.test':
         f = request.FILES['document']
         for chunk in f.chunks():
             content = chunk.decode("utf-8")
 
-    artifact.stored_file_name = uploaded_file_url # this will be full relative path of (potentially) renamed file due to conflict
-    artifact.save()
+    # artefact.stored_file_name = uploaded_file_url # this will be full relative path of (potentially) renamed file due to conflict
+    # artefact.save()
+
+    url = _artefact_url(artefact.test_name, artefact.app_name, artefact.run_name, artefact.name)
 
     page_title = 'Log file'
     page_heading = 'File logged ok'
     error = ''
-    url = 'http://example.com/test?value=testing123'
     context = {
         'page_title': page_title,
         'page_heading': page_heading,
         'url': url,
-        'name': artifact.name,
-        'stored_file_name': artifact.stored_file_name,
-        'desc': artifact.desc,
+        'name': artefact.name,
+        'desc': artefact.desc,
         'content': content,
         'error': error,
     }
     return render(request, 'results/log_file.html', context)
 
 def _log_file_form(request):
-    form = ArtifactForm()
+    form = ArtefactForm()
     context = { 
         'page_title': 'Log file',
-        'page_heading': 'Upload test artifact',
+        'page_heading': 'Upload test artefact',
         'form': form,
     }
     return render(request, 'results/log_file_form.html', context)
 
 def get_file(request):
-    stored_file_name = request.GET.get('stored_file_name', None)
-    with open(stored_file_name, 'rb') as content_file:
+    test_name = request.GET.get('test_name', None)
+    app_name = request.GET.get('app_name', None)
+    run_name = request.GET.get('run_name', None)
+    name = request.GET.get('name', None)
+
+    try:
+        artefactLab = Artefact.objects.filter(test_name=test_name, app_name=app_name, run_name=run_name, name=name)
+    except Artefact.DoesNotExist:
+        artefactLab = None
+
+    if not artefactLab:
+        return HttpResponse('File does not exist')
+
+    with artefactLab[0].document.open(mode='rb') as content_file:
          content = content_file.read()
+
+    # with open(stored_file_name, 'rb') as content_file:
+    #      content = content_file.read()
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-    return HttpResponse(content, content_type=_get_mime_type(stored_file_name))
+    return HttpResponse(content, content_type=_get_mime_type(name))
 
 def _get_mime_type(path):
     filename, file_extension = os.path.splitext(path)

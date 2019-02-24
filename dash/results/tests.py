@@ -131,12 +131,19 @@ class AddTestResultTests(TestCase):
 
         return response
 
-    def get_file(self, stored_file_name, debug=False):
-        url = my_reverse('results:get_file', query_kwargs={'stored_file_name': stored_file_name})
+    def get_file(self, test_name='d', app_name='d', run_name='d', name='d', debug=False):
+        url = my_reverse('results:get_file',
+            query_kwargs={
+                    'test_name': test_name,
+                    'app_name': app_name,
+                    'run_name': run_name,
+                    'name': name,
+                }
+            )
         return self._get_url(url, debug)
 
-    def get_stored_file_name(self, response):
-        m = re.search(r"Stored file name: ([^<]+)", response.content.decode('utf-8'))
+    def get_artefact_url(self, response):
+        m = re.search(r"Artefact url: ([^<]+)", response.content.decode('utf-8'))
         return m.group(1)
 
     def number_of_instances(self, response, target):
@@ -1318,39 +1325,38 @@ class AddTestResultTests(TestCase):
     def test_can_log_simple_txt_file(self):
         result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestRunName', name='test.test', desc='unit test file upload', debug=False)
         self.assertContains(result, 'File logged ok')
-        self.assertContains(result, 'Stored file name: artifacts/UnitTestApp/UnitTestRunName/UnitTestName/test')
+        self.assertContains(result, 'Artefact url: /results/get_file/?test_name=UnitTestName&app_name=UnitTestApp&run_name=UnitTestRunName&name=test.test')
         self.assertContains(result, 'File desc: unit test file upload')
         self.assertContains(result, 'File content: Some file content')
 
     def test_can_read_logged_file_content(self):
         result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', desc='read file content', debug=False)
-        stored_file_name = self.get_stored_file_name(result)
-        result = self.get_file(stored_file_name, debug=False)
+        artefact_url = self.get_artefact_url(result)
+        result = self._get_url(artefact_url)
+        self.assertContains(result, 'Some file content')
+        self.assertRegex(result['content-type'], 'text/plain')
+        result = self.get_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.test', debug=False)
         self.assertContains(result, 'Some file content')
         self.assertRegex(result['content-type'], 'text/plain')
 
     def test_can_serve_image_jpeg_mime_type(self):
         result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.jpg', desc='read file content', debug=False)
-        stored_file_name = self.get_stored_file_name(result)
-        result = self.get_file(stored_file_name, debug=False)
+        result = self.get_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.jpg', debug=False)
         self.assertRegex(result['content-type'], 'image/jpeg')
 
     def test_can_serve_html_mime_type(self):
         result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.html', desc='read file content', debug=False)
-        stored_file_name = self.get_stored_file_name(result)
-        result = self.get_file(stored_file_name, debug=False)
+        result = self.get_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.html', debug=False)
         self.assertRegex(result['content-type'], 'text/html')
 
     def test_can_serve_image_png_mime_type(self):
         result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.pNg', desc='read file content', debug=False)
-        stored_file_name = self.get_stored_file_name(result)
-        result = self.get_file(stored_file_name, debug=False)
+        result = self.get_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.pNg', debug=False)
         self.assertRegex(result['content-type'], 'image/png')
 
     def test_can_serve_json_mime_type(self):
         result = self.log_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.JsoN', desc='read file content', debug=False)
-        stored_file_name = self.get_stored_file_name(result)
-        result = self.get_file(stored_file_name, debug=False)
+        result = self.get_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.JsoN', debug=False)
         self.assertRegex(result['content-type'], 'application/json')
 
     # Ensure test_name, app_name and run_name can be used as file names 
@@ -1362,14 +1368,14 @@ class AddTestResultTests(TestCase):
         #
 
     def test_can_see_link_to_html_file_on_details(self):
-        result = self.log_file(test_name='HTML file', app_name='Details', run_name='Run_bcd', name='test.html', desc='html file', debug=False)
+        self.log_file(test_name='HTML file', app_name='Details', run_name='Run_bcd', name='test.html', desc='html file', debug=False)
         id = self.log_result(test_name='HTML file', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
-        self.assertContains(self.get_detail(id, debug=True), '>test.html</a>')
+        self.assertContains(self.get_detail(id, debug=False), '>test.html</a>')
 
     def test_can_see_img_src_link_to_jpg_file_on_details(self):
-        result = self.log_file(test_name='JPG file', app_name='Details', run_name='Run_bcd', name='test.jpg', desc='jpg file', debug=False)
+        self.log_file(test_name='JPG file', app_name='Details', run_name='Run_bcd', name='test.jpg', desc='jpg file', debug=False)
         id = self.log_result(test_name='JPG file', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
-        self.assertContains(self.get_detail(id, debug=True), 'alt="jpg file"')
+        self.assertContains(self.get_detail(id, debug=False), 'alt="jpg file"')
 
         #
         # Team View

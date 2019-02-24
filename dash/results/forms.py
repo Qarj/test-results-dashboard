@@ -1,9 +1,9 @@
 from django import forms
-from .models import Artifact
+from .models import Artefact
 
-class ArtifactForm(forms.ModelForm):
+class ArtefactForm(forms.ModelForm):
     class Meta:
-        model = Artifact
+        model = Artefact
         fields = (
             'test_name',
             'app_name',
@@ -11,4 +11,4 @@ class ArtifactForm(forms.ModelForm):
             'name',
             'desc',
             'document',
-             )
+        )

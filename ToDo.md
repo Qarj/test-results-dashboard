@@ -1,7 +1,11 @@
 # test-results-dashboard Task list
 
+'''
+manage.py test results.tests.AddTestResultTests.test_can_log_simple_txt_file
+'''
+
 # Current
-- remove test_name, run_name and app_name from Artefact save so we don't need to worry about file name safe issues & file deletion
+x remove test_name, run_name and app_name from Artefact save so we don't need to worry about file name safe issues & file deletion
 - only load documents on final state in load_test_data.py, not pend
 - load dom example
 - review load scripts for linux and windows

@@ -7,9 +7,8 @@
 {% else %}
     <h2>{{ page_heading }}</h2>
     <p>name: {{ name }}</p>
-    <p>Stored file name: {{ stored_file_name }}</p>
     <p>File desc: {{ desc }}</p>
-    <p>test_file_url is {{ url }}</p>
+    <p>Artefact url: {{ url|safe }}</p>
 {% endif %}
 
  {% if content %}

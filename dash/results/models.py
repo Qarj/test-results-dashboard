@@ -13,13 +13,12 @@ class Result(models.Model):
     message = models.CharField(max_length=200, null=True, blank=True)
     team_name = models.CharField(max_length=20, default=None, blank=True, null=True)
 
-class Artifact(models.Model):
+class Artefact(models.Model):
     test_name = models.CharField(max_length=200)
     app_name = models.CharField(max_length=50)
     run_name = models.CharField(max_length=20)
-    name = models.CharField(max_length=100, null=True)
-    stored_file_name = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=100)
     desc = models.CharField(max_length=200)
-    document = models.FileField(upload_to='documents/', default=None)
+    document = models.FileField(upload_to='artefacts/%Y/%m/%d/', default=None)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
