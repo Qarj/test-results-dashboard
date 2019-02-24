@@ -9,8 +9,11 @@ def start_server():
         #print ("Server was already started")
         return
 
-    os.system(f'start "Test Results Dashboard server" /I python dash/manage.py runserver {port}')
-    
+    if os.name == 'nt':
+        os.system(f'start "Test Results Dashboard server" /I python dash/manage.py runserver {port}')
+    else:
+        os.system('gnome-terminal --title "Test Results Dashboard" -x bash -c "python3 ' + dir_path +'/dash/manage.py runserver"')
+   
     attempts = 1
     max_attempts = 5
     while (True):
@@ -37,7 +40,10 @@ port = "8811"
 path = "/results"
 
 if (not os.path.isfile("dash/results/migrations/0001_initial.py")):
-    os.system('python delete_dashboard_then_create_empty.py')
+    if os.name == 'nt':
+        os.system('python delete_dashboard_then_create_empty.py')
+    else:
+        os.system('python3 delete_dashboard_then_create_empty.py')
 
 start_server()
 

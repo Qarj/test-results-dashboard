@@ -11,15 +11,13 @@ def remove_if_exists(file):
     except FileNotFoundError:
         pass
 
-os.system('TASKKILL /F /T /FI "WINDOWTITLE eq Test Results Dashboard server"')
+if os.name == 'nt':
+    os.system('TASKKILL /F /T /FI "WINDOWTITLE eq Test Results Dashboard server"')
 
 remove_if_exists("dash/db.sqlite3")
 shutil.rmtree('dash/results/migrations', ignore_errors=True)
 shutil.rmtree('dash/results/migrations', ignore_errors=True)
 shutil.rmtree('dash/results/migrations', ignore_errors=True)
-shutil.rmtree('artefacts', ignore_errors=True)
-shutil.rmtree('artefacts', ignore_errors=True)
-shutil.rmtree('artefacts', ignore_errors=True)
 shutil.rmtree('dash/artefacts', ignore_errors=True)
 shutil.rmtree('dash/artefacts', ignore_errors=True)
 shutil.rmtree('dash/artefacts', ignore_errors=True)
