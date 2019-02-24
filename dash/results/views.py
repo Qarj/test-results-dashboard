@@ -39,9 +39,11 @@ def detail(request, result_id):
         except Result.DoesNotExist:
             artifactsLab = None
 
+    print (result.test_name, result.app_name, result.run_name)
     if artifactsLab:
         for artifact in artifactsLab:
             artifact.url = my_reverse('results:get_file', query_kwargs={'stored_file_name': artifact.stored_file_name})
+            print(artifact.url)
             artifact.image = _is_image(artifact.name)
 
     context = {

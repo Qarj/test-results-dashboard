@@ -8,10 +8,11 @@ import requests
 final_results = []
 
 def log_test_result(number=1, app="DefaultApp", run_name="DefaultRun", test_passed=True, run_server='TeamCity', message=''):
-    test_name = 'acceptance%20test%20' + str(number)
+    test_name = 'acceptance test ' + str(number)
+    test_name_encoded = urllib.parse.quote_plus(test_name)
     host = f'http://{host_name}:{port}'
     urllib.request.urlopen(host
-        + '/results/log/?test_name=' + test_name
+        + '/results/log/?test_name=' + test_name_encoded
         + "&app_name=" + app
         + "&test_passed=" + str(test_passed)
         + "&run_name=" + run_name
@@ -22,6 +23,7 @@ def log_test_result(number=1, app="DefaultApp", run_name="DefaultRun", test_pass
         f'{host}/results/log_file/',
         files=_build_mulitpart_form_data('screenshot.png', 'tests/assets/', test_name, app, run_name, 'Screen shot when error occurred')
     )
+    print(response.text)
 
 def _build_mulitpart_form_data(filename, path, test_name, app, run_name, desc):
     return {

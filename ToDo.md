@@ -1,5 +1,19 @@
 # test-results-dashboard Task list
 
+# Current
+- remove test_name, run_name and app_name from Artefact save so we don't need to worry about file name safe issues & file deletion
+- only load documents on final state in load_test_data.py, not pend
+- load dom example
+- review load scripts for linux and windows
+- put assets in table
+- show asset description
+- show asset offset time (i.e. from Start Time delta)
+- show time asset was added
+- understand deletion bugs
+- include artefacts in deletion
+- add method to delete test older than days
+
+
 ## Phase II
 - Clean up artefacts
 - Fully aync to log test result - happens on other thread, prove it with delay parameter
