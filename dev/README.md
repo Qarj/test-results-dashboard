@@ -29,3 +29,14 @@ manage.py test results.tests.AddTestResultTests.test_can_log_simple_txt_file
 ```
 manage.py test results
 ```
+
+## Linux - activate the virtual environment
+```
+cd /usr/local/venvs/dash
+source bin/activate
+```
+
+When done
+```
+deactivate
+```
