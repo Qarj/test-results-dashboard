@@ -19,11 +19,16 @@ def log_test_result(number=1, app="DefaultApp", run_name="DefaultRun", test_pass
         + "&run_server=" + run_server
         + "&message=" + urllib.parse.quote_plus(message)
         ).read()
+    if test_passed == 'pend':
+        return
     response = requests.post(
         f'{host}/results/log_file/',
         files=_build_mulitpart_form_data('screenshot.png', 'tests/assets/', test_name, app, run_name, 'Screen shot when error occurred')
     )
-    print(response.text)
+    response = requests.post(
+        f'{host}/results/log_file/',
+        files=_build_mulitpart_form_data('final_dom.html', 'tests/assets/', test_name, app, run_name, 'Final DOM when error occurred')
+    )
 
 def _build_mulitpart_form_data(filename, path, test_name, app, run_name, desc):
     return {

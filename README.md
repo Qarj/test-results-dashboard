@@ -210,8 +210,8 @@ From Apache Lounge https://www.apachelounge.com/download/ download Win32 zip fil
 
 From Admin terminal (port 80 will need to be free for this to work)
 ```
-C:\Apache\bin\httpd -k install
-C:\Apache\bin\httpd -k start
+C:\Apache24\bin\httpd -k install
+C:\Apache24\bin\httpd -k start
 ```
 
 ## Install mod_wsgi-express
@@ -247,6 +247,11 @@ start notepad++ C:\Apache24\conf\httpd.conf
 ```
 
 Now uncomment the line `Include conf/extra/httpd-vhosts.conf`, then save.
+
+Optional - for localhost testing, add this line to `httpd.conf` to prevent warnings
+```
+ServerName localhost
+```
 
 Keep the file open, there is another change to make.
 

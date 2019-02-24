@@ -6,9 +6,12 @@ manage.py test results.tests.AddTestResultTests.test_can_log_simple_txt_file
 
 # Current
 x remove test_name, run_name and app_name from Artefact save so we don't need to worry about file name safe issues & file deletion
-- only load documents on final state in load_test_data.py, not pend
-- load dom example
+x only load documents on final state in load_test_data.py, not pend
+x load dom example
+x does test file work under Apache - Windows
 - review load scripts for linux and windows
+- does test file work under Apache - Linux
+- logging same asset name twice should overwrite, or not cause errors
 - put assets in table
 - show asset description
 - show asset offset time (i.e. from Start Time delta)
