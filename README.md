@@ -145,6 +145,7 @@ Install the necessary packages for test-results-dashboard as a normal user, not 
 ```
 pip install Django
 pip install mod_wsgi
+pip install requests
 ```
 If you are plagued by SSL errors, then you need to build Python 3 manually to sort it out.
 Check here for how to do this: https://github.com/Qarj/linux-survival/blob/master/BuildPython3.md
@@ -179,12 +180,18 @@ Start the development server
 python start.py
 ```
 
-The last command will perform Django SQL migrations, open a new gnome-terminal tab, and load a bunch of test data.
+Load some test data
+```
+python load_test_data.py
+```
+
+Check that the dashboard seems to be working at http://localhost:8811/results/
 
 Now close the Django development server (new gnome-terminal tab or window created).
 
 Then back in the original terminal shell that has the (dash) Python 3 environment activated:
 ```
+cd /var/www/dash/test-results-dashboard
 sudo chmod 666 dash/db.sqlite3
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
 sudo cp /var/www/dash/test-results-dashboard/dash/all-qarj-projects-linux.conf /etc/apache2/sites-enabled
