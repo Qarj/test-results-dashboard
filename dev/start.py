@@ -13,7 +13,7 @@ def start_server():
     if os.name == 'nt':
         os.system(f'start "Test Results Dashboard server" /I python ../dash/manage.py runserver {port}')
     else:
-        os.system('gnome-terminal --title "Test Results Dashboard" -x bash -c "python ' + dir_path +'/../dash/manage.py runserver {port}"')
+        os.system('gnome-terminal --title "Test Results Dashboard" -x bash -c "python ' + dir_path + f'/../dash/manage.py runserver {port}"')
    
     attempts = 1
     max_attempts = 5
