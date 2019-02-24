@@ -56,13 +56,22 @@
             <!-- ~ End Row -->
         </tr>
     </table>
+    <p></p>
+    {% if artefacts %}
+    <table id="files_detail">
     {% for artefact in artefacts %}
+        <tr>
+            <td class="bold" name="OffsetFromTestStart">{{artefact.duration_text}}</td>
+            <td class="bold" name="ArtefactDesc">{{artefact.desc}}</td>
         {% if artefact.image %}
-            <img src="{{artefact.url}}">{{artefact.name}} alt="{{artefact.desc}}"</a>
+            <td class="bold" name="Artefact">{{artefact.name}}<br/><a href="{{artefact.url}}"><img src="{{artefact.url}}"></a></td>
         {% else %}
-            <a href="{{artefact.url}}">{{artefact.name}}</a>
+            <td class="bold" name="Artefact"><a href="{{artefact.url}}" class="normal">{{artefact.name}}</a></td>
         {% endif %}
+        </tr>
     {% endfor %}
+    </table>
+    {% endif %}
 {% else %}
     <p>No results are available.</p>
     <h4><a href="{% url 'results:latest' %}" class="normal">See all the latest results here</a></h4>

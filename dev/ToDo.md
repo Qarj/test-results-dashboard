@@ -8,36 +8,37 @@ x does test file work under Apache - Windows
 x review load scripts for linux and windows
 x does test file work under Apache - Linux
 x update README for read_file
-- logging same asset name twice should overwrite, or not cause errors
-- put assets in table
-- show asset description
-- show asset offset time (i.e. from Start Time delta)
-- show time asset was added
+x logging same asset name twice should overwrite, or not cause errors
+x put assets in table
+x show asset description
+x draw border around table
+x show asset offset time (i.e. from Start Time delta)
 - understand deletion bugs
 - include artefacts in deletion
 - add method to delete test older than days
 
 
 ## Phase II
-- Clean up artefacts
-- Fully aync to log test result - happens on other thread, prove it with delay parameter
+- Fully async to log test result - happens on other thread, prove it with delay parameter
 - Async to view results, does not block anything, prove that you can view results and log at same time with delay parameter
 - Show results by Tribe
 - Drill into previous results
-- Tidy up root folder
-    - Linux and Windows should be common
-    - Move to setup / quickstart folder
 
 # Linux Deployment Notes
 
 If a firewall exists:
+```
 sudo ufw allow 'Apache'
 sudo ufw status
+```
 
 Confirm Apache is running:
+```
 sudo systemctl status apache2
+```
 
 Common commands:
+```
 sudo systemctl stop apache2
 sudo systemctl start apache2
 sudo systemctl restart apache2
@@ -46,7 +47,7 @@ sudo systemctl disable apache2
 sudo systemctl enable apache2
 cat /etc/apache2/envvars
 cat /var/log/apache2/error.log
-
+```
 
 ## References
 * https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/modwsgi/

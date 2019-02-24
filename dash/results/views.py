@@ -43,8 +43,9 @@ def detail(request, result_id):
     if artefactsLab:
         for artefact in artefactsLab:
             artefact.url = _artefact_url(artefact.test_name, artefact.app_name, artefact.run_name, artefact.name)
-            #print(artefact.url)
             artefact.image = _is_image(artefact.name)
+            artefact.duration, artefact.duration_text = _get_duration(result.date_created, artefact.date_created)
+
 
     context = {
         'page_title': page_title,

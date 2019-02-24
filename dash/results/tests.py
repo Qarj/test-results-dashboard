@@ -1359,8 +1359,13 @@ class AddTestResultTests(TestCase):
         result = self.get_file(test_name='UnitTestName', app_name='UnitTestApp', run_name='UnitTestName', name='test.JsoN', debug=False)
         self.assertRegex(result['content-type'], 'application/json')
 
-    # Ensure test_name, app_name and run_name can be used as file names 
-    # Artifact to Artefact
+    def test_can_log_same_file_twice(self):
+        result = self.log_file(test_name='UnitTestName1', app_name='UnitTestApp', run_name='UnitTestRunName', name='test.test', desc='unit test file upload', debug=False)
+        self.assertContains(result, 'File logged ok')
+        result = self.log_file(test_name='UnitTestName1', app_name='UnitTestApp', run_name='UnitTestRunName', name='test.test', desc='unit test file upload', debug=False)
+        self.assertContains(result, 'File logged ok')
+        id = self.log_result(test_name='UnitTestName1', app_name='UnitTestApp', run_name='UnitTestRunName', run_server='TeamCity', test_passed='fail', debug=False)
+        self.get_detail(id, debug=False)
 
 
         #
@@ -1375,7 +1380,20 @@ class AddTestResultTests(TestCase):
     def test_can_see_img_src_link_to_jpg_file_on_details(self):
         self.log_file(test_name='JPG file', app_name='Details', run_name='Run_bcd', name='test.jpg', desc='jpg file', debug=False)
         id = self.log_result(test_name='JPG file', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
-        self.assertContains(self.get_detail(id, debug=False), 'alt="jpg file"')
+        self._assertRegex(self.get_detail(id, debug=False), 'img src="[^"]+test.jpg"')
+
+    def test_files_in_table_on_details(self):
+        id = self.log_result(test_name='Table', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
+        self._assertNotRegex(self.get_detail(id, debug=False), 'files_detail')
+        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=False)
+        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test2.html', desc='html file2', debug=False)
+        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='screen.jpg', desc='screenshot', debug=False)
+        result = self.get_detail(id, debug=False)
+        self.assertContains(result, 'files_detail')
+        self.assertContains(result, 'name="OffsetFromTestStart"')
+        self.assertContains(result, 'name="ArtefactDesc"')
+        self.assertContains(result, 'name="Artefact"')
+
 
         #
         # Team View

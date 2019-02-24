@@ -104,3 +104,24 @@ table {
 }
 
 /*tr { vertical-align: text-top; } */
+
+#files_detail {
+  font-family: font-family: 'Ubuntu', sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#files_detail td, #files_detail th {
+  border: 1px solid #aaa;
+  padding: 8px;
+}
+
+/* #files_detail tr:nth-child(even){background-color: #f2f2f2;} */
+
+#files_detail th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: #aaa;
+}
