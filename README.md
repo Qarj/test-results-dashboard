@@ -166,7 +166,6 @@ Set permissions so the Apache user can access the project:
 cd /var/www/dash/test-results-dashboard
 sudo chmod 777 dash
 sudo chmod 777 dash/results
-sudo chmod 777 dash/results/migrations
 ```
 
 Initialise the database (or recreate it):
@@ -301,12 +300,24 @@ to specify the port.
 ```
 
 ## Create a dashboard and load some test data
+Initialise the database (or recreate it):
 ```
-cd /git/test-results-dashboard
-python new_dashboard_with_test_data_(will_erase_all).py
+cd C:/git/test-results-dashboard/dash/dev
+python delete_dashboard_then_create_empty.py
 ```
 
-Verify with url: http://localhost/dash/results
+Start the development server
+```
+python start.py
+```
+
+Load some test data
+```
+python load_test_data.py
+```
+Check that the dashboard seems to be working with the development server http://localhost:8811/results/
+
+Verify Apache deployment with url: http://localhost/dash/results
 
 ## Debug
 ```
