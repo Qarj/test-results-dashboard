@@ -111,6 +111,9 @@ HTTP GET
 
 # Linux Apache Deployment
 
+Needs at least Python 3.6. See https://github.com/Qarj/linux-survival/blob/master/BuildPython3.md for details
+on building Python from source.
+
 First install required system packages as root:
 ```
 sudo apt update
@@ -161,12 +164,14 @@ Set permissions so the Apache user can access the project:
 ```
 cd /var/www/dash/test-results-dashboard
 sudo chmod 777 dash
+sudo chmod 777 dash/results
 sudo chmod 777 dash/results/migrations
 ```
 
 Initialise the dashboard:
 ```
-python linux_new_dashboard.py
+cd dev
+python delete_dashboard_then_create_empty.py
 ```
 The last command will perform Django SQL migrations, open a new gnome-terminal tab, and load a bunch of test data.
 
@@ -316,23 +321,6 @@ python manage.py test results
 
 The server does not need to be running for the unit tests.
 
-
-# WebImblaze Tests
-
-There are some higer level WebImblaze tests also.
-
-Run the WebImblaze tests from the project root folder.
-
-WebImblaze and the WebImblaze-Framework need to be first cloned to C:\git
-
-These tests target the Django development server, they do not work from the Apache urls.
-
-```
-perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/start.py.test
-perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/delete_dashboard_then_create_empty.py.test
-perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/new_dashboard_with_test_data_(will_erase_all).py.test
-perl ../WebImblaze-Framework/wif.pl ../test-results-dashboard/tests/load_test_data.py.test
-```
 
 # Django reference
 

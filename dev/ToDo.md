@@ -7,6 +7,7 @@ x load dom example
 x does test file work under Apache - Windows
 - review load scripts for linux and windows
 - does test file work under Apache - Linux
+- update readme for read_file
 - logging same asset name twice should overwrite, or not cause errors
 - put assets in table
 - show asset description
@@ -20,7 +21,7 @@ x does test file work under Apache - Windows
 ## Phase II
 - Clean up artefacts
 - Fully aync to log test result - happens on other thread, prove it with delay parameter
-- Aync to view results, does not block anything, prove that you can view results and log at same time with delay parameter
+- Async to view results, does not block anything, prove that you can view results and log at same time with delay parameter
 - Show results by Tribe
 - Drill into previous results
 - Tidy up root folder
