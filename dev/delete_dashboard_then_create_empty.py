@@ -23,7 +23,7 @@ shutil.rmtree('../dash/artefacts', ignore_errors=True)
 shutil.rmtree('../dash/artefacts', ignore_errors=True)
 
 py_name = 'python3'
-if os.name = 'nt':
+if os.name == 'nt':
     py_name = 'python'
 
 os.system(f'{py_name} ../dash/manage.py makemigrations results')
