@@ -174,7 +174,6 @@ Initialise the database (or recreate it):
 cd dev
 python delete_dashboard_then_create_empty.py
 sudo chmod 666 /var/www/dash/test-results-dashboard/dash/db.sqlite3
-sudo chmod 777 /var/www/dash/test-results-dashboard/dash/artefacts
 ```
 
 Start the development server
@@ -185,6 +184,8 @@ python start.py
 Load some test data
 ```
 python load_test_data.py
+cd /var/www/dash/test-results-dashboard/dash/artefacts
+sudo find . -type f -exec chmod a+rw {} \;
 ```
 
 Check that the dashboard seems to be working at http://localhost:8811/results/
