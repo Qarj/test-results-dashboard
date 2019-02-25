@@ -14,6 +14,7 @@ x show asset description
 x draw border around table
 x show asset offset time (i.e. from Start Time delta)
 - understand deletion bugs
+    - the bug is that it is not deleting the oldest, perhaps the oldest per day
 - include artefacts in deletion
 - add method to delete test older than days
 
