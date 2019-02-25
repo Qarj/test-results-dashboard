@@ -173,6 +173,8 @@ Initialise the database (or recreate it):
 ```
 cd dev
 python delete_dashboard_then_create_empty.py
+sudo chmod 666 /var/www/dash/test-results-dashboard/dash/db.sqlite3
+sudo chmod 777 /var/www/dash/test-results-dashboard/dash/artefacts
 ```
 
 Start the development server
@@ -192,7 +194,6 @@ Now close the Django development server (new gnome-terminal tab or window create
 Then back in the original terminal shell that has the (dash) Python 3 environment activated:
 ```
 cd /var/www/dash/test-results-dashboard
-sudo chmod 666 dash/db.sqlite3
 mod_wsgi-express module-config | sudo tee /etc/apache2/conf-enabled/wsgi.conf
 sudo cp /var/www/dash/test-results-dashboard/dash/all-qarj-projects-linux.conf /etc/apache2/sites-enabled
 sudo rm /etc/apache2/sites-enabled/000-default.conf
