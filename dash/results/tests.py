@@ -888,7 +888,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(result, 'File does not exist')
 
     #
-    # Delete old runs - only keep newest number #oldest
+    # Delete old runs per app - only keep newest number #oldest
     #
 
     def test_delete_oldest_runs_per_app_only_keep_newest(self):

@@ -479,6 +479,7 @@ def delete_oldest_runs_per_app_only_keep_newest(request, number_of_runs_to_keep)
         for run_to_remove in remove_list:
             runs_deleted_count += 1
             Result.objects.filter(run_name=run_to_remove, app_name=app_name).delete()
+            Artefact.objects.filter(run_name=run_to_remove, app_name=app_name).delete()
 
     page_title = 'Delete oldest'
     page_heading = 'Deleted oldest runs per app ok'
