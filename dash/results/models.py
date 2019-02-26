@@ -1,5 +1,8 @@
 from django.db import models
 
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
 # Create your models here.
 
 class Result(models.Model):
@@ -22,3 +25,7 @@ class Artefact(models.Model):
     document = models.FileField(upload_to='artefacts/%Y/%m/%d/', default=None)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+
+@receiver(post_delete, sender=Artefact)
+def submission_delete(sender, instance, **kwargs):
+    instance.document.delete(False)
