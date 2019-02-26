@@ -103,11 +103,11 @@ HTTP GET
 {SITE_ROOT}results/delete/5
 ```
 
-## Delete all the runs except for the most recent 50
+## Delete all the runs except for the most recent 50 per app
 
 HTTP GET
 ```
-{SITE_ROOT}results/delete_oldest_runs_only_keep_newest/50/
+{SITE_ROOT}results/delete_oldest_runs_per_app_only_keep_newest/50/
 ```
 
 # Linux Apache Deployment

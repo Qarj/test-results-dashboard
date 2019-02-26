@@ -34,10 +34,10 @@ urlpatterns = [
     # ex: /results/delete/5/
     path('delete/<int:result_id>/', views.delete, name='delete'),
 
-    # ex: /results/delete_oldest_runs_only_keep_newest/50/
-    path('delete_oldest_runs_only_keep_newest/<int:number_of_runs_to_keep>/'
-        , views.delete_oldest_runs_only_keep_newest
-        , name='delete_oldest_runs_only_keep_newest'),
+    # ex: /results/delete_oldest_runs_per_app_only_keep_newest/50/
+    path('delete_oldest_runs_per_app_only_keep_newest/<int:number_of_runs_to_keep>/'
+        , views.delete_oldest_runs_per_app_only_keep_newest
+        , name='delete_oldest_runs_per_app_only_keep_newest'),
 
     # ex: /results/latest/
     path('latest/', views.latest, name='latest'),

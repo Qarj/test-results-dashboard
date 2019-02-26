@@ -891,11 +891,11 @@ class AddTestResultTests(TestCase):
     # Delete old runs - only keep newest number #oldest
     #
 
-    def test_delete_oldest_runs_only_keep_newest(self):
+    def test_delete_oldest_runs_per_app_only_keep_newest(self):
         """
         Delete oldest runs - only keep newest
         """
-        #Example: http://127.0.0.1:8000/results/delete_oldest_runs_only_keep_newest/50/
+        #Example: http://127.0.0.1:8000/results/delete_oldest_runs_per_app_only_keep_newest/50/
         self.log_result(test_name='Car', app_name='PleaseDeleteMe', run_name='Run1')            #1
         self.log_result(test_name='Truck', app_name='PleaseDeleteMe', run_name='Run1')          #2
         self.log_result(test_name='Bike', app_name='PleaseDeleteMe', run_name='Run2')           #3
@@ -909,7 +909,7 @@ class AddTestResultTests(TestCase):
         self.log_result(test_name='Telephone', app_name='DeleteMeAlso', run_name='Run1')        #9
 
         ## Keep 4 runs - this shouldn't delete anything - only at most 3 Runs 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(5,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(5,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -929,7 +929,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 3 runs - this also shouldn't delete anything - only at most 3 Runs 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(3,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(3,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -949,7 +949,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 2 runs - will only remove Run 1 from PleaseDeleteMe app
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(2,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(2,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -969,7 +969,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 1 runs - only latest run kept for each app
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(1,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(1,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -987,7 +987,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 0 runs
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(0,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(0,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
 
@@ -1007,7 +1007,7 @@ class AddTestResultTests(TestCase):
         """
         test_result_id = self.log_result(test_name='My really nice test', app_name='Details', run_name='DetailsTestRun', run_server='TeamCity')
 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(1,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(1,))
         response = self.client.get(url)
 
         #print (response.content.decode('utf-8'))
@@ -1023,7 +1023,7 @@ class AddTestResultTests(TestCase):
         test_result_id = self.log_result(test_name='Test1', app_name='Details', run_name='Run3')
         test_result_id = self.log_result(test_name='Test1', app_name='Details', run_name='Run4')
 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(1,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(1,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted 3 runs')
 

@@ -27,6 +27,7 @@ def detail(request, result_id):
 
     page_title = 'Result id ' + str(result_id)
     page_heading = page_title
+
     artefactsLab = None
     if (result):
         result.test_status = _get_test_status(result.test_passed)
@@ -34,12 +35,8 @@ def detail(request, result_id):
         if (result.test_status == 'pend'):
             result.date_modified = ''
             result.duration = ''
-        try:
-            artefactsLab = Artefact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
-        except Result.DoesNotExist:
-            artefactsLab = None
+        artefactsLab = _get_artefacts(result)
 
-    #print (result.test_name, result.app_name, result.run_name)
     if artefactsLab:
         for artefact in artefactsLab:
             artefact.url = _artefact_url(artefact.test_name, artefact.app_name, artefact.run_name, artefact.name)
@@ -55,6 +52,13 @@ def detail(request, result_id):
     }
 
     return render(request, 'results/detail.html', context)
+
+def _get_artefacts(result):
+    try:
+        artefactsLab = Artefact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
+    except Artefact.DoesNotExist:
+        artefactsLab = None
+    return artefactsLab
 
 # /results/get_file/?test_name=test1&app_name=Apply&run_name=Run1&name=screen.jpg
 def _artefact_url(test_name, app_name, run_name, name):
@@ -160,9 +164,6 @@ def log_file(request):
         for chunk in f.chunks():
             content = chunk.decode("utf-8")
 
-    # artefact.stored_file_name = uploaded_file_url # this will be full relative path of (potentially) renamed file due to conflict
-    # artefact.save()
-
     url = _artefact_url(artefact.test_name, artefact.app_name, artefact.run_name, artefact.name)
 
     page_title = 'Log file'
@@ -205,9 +206,6 @@ def get_file(request):
     with artefactLab[0].document.open(mode='rb') as content_file:
          content = content_file.read()
 
-    # with open(stored_file_name, 'rb') as content_file:
-    #      content = content_file.read()
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
     return HttpResponse(content, content_type=_get_mime_type(name))
 
 def _get_mime_type(path):
@@ -428,10 +426,7 @@ def delete(request, result_id):
         return HttpResponse(f'Result id {result_id} does not exist')
 
     artefactsLab = None
-    try:
-        artefactsLab = Artefact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
-    except Result.DoesNotExist:
-        artefactsLab = None
+    artefactsLab = _get_artefacts(result)
 
     #print (result.test_name, result.app_name, result.run_name)
     artefacts_deleted = 0
@@ -462,7 +457,7 @@ def remove_duplicates_from_list_preserving_order(list_with_duplicates):
        result.append(item)
    return result
 
-def delete_oldest_runs_only_keep_newest(request, number_of_runs_to_keep):
+def delete_oldest_runs_per_app_only_keep_newest(request, number_of_runs_to_keep):
     
     # repeat per app:
     #   get all the run names for an app - order by create date
@@ -473,7 +468,7 @@ def delete_oldest_runs_only_keep_newest(request, number_of_runs_to_keep):
     runs_deleted_count = 0
     for app_name in app_list:
         keep_list = remove_duplicates_from_list_preserving_order(list( Result.objects.filter(app_name=app_name)
-            .order_by('run_name', 'date_created').values_list("run_name", flat=True) ) )
+            .order_by('date_created', 'run_name').values_list("run_name", flat=True) ) )
     
         number_of_runs_to_remove_from_keep_list = len(keep_list) - number_of_runs_to_keep
         if (number_of_runs_to_remove_from_keep_list < 0):
