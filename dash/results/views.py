@@ -421,6 +421,25 @@ def _get_last_modified_time(resultLab):
     return last_modified        
 
 def delete(request, result_id):
+
+    try:
+        result = Result.objects.get(pk=result_id)
+    except Result.DoesNotExist:
+        return HttpResponse(f'Result id {result_id} does not exist')
+
+    artefactsLab = None
+    try:
+        artefactsLab = Artefact.objects.filter(test_name=result.test_name, app_name=result.app_name, run_name=result.run_name)
+    except Result.DoesNotExist:
+        artefactsLab = None
+
+    #print (result.test_name, result.app_name, result.run_name)
+    artefacts_deleted = 0
+    if artefactsLab:
+        for artefact in artefactsLab:
+            artefact.delete()
+            artefacts_deleted += 1
+
     Result.objects.filter(id=result_id).delete()
     
     page_title = 'Delete id ' + str(result_id)
@@ -429,6 +448,7 @@ def delete(request, result_id):
     context = {
         'page_title': page_title,
         'page_heading': page_heading,
+        'artefacts_deleted': artefacts_deleted,
     }
 
     return render(request, 'results/delete.html', context)

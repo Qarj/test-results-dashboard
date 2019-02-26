@@ -868,6 +868,24 @@ class AddTestResultTests(TestCase):
         #print (response.content.decode('utf-8'))
         self.assertContains(response, '<title>Delete id 1</title>')
         self.assertContains(response, '<h2>Result id 1 deleted ok</h2>')
+        self.assertNotContains(response, 'test artefacts were also deleted')
+
+    def test_delete_result_removes_uploaded_files_also(self):
+        test_result_id = self.log_result(test_name='My test with files', app_name='Details', run_name='DetailsTestRun', run_server='TeamCity')
+
+        result = self.log_file(test_name='My test with files', app_name='Details', run_name='DetailsTestRun', name='test.test', desc='read file content', debug=False)
+        artefact_url = self.get_artefact_url(result)
+        result = self._get_url(artefact_url)
+        self.assertContains(result, 'Some file content')
+
+        result = self.log_file(test_name='My test with files', app_name='Details', run_name='DetailsTestRun', name='other_file.test', desc='something else', debug=False)
+
+        url = reverse('results:delete', args=(test_result_id,))
+        result = self._get_url(url, debug=False)
+        self.assertContains(result, '2 test artefacts were also deleted')
+
+        result = self._get_url(artefact_url, debug=False)
+        self.assertContains(result, 'File does not exist')
 
     #
     # Delete old runs - only keep newest number #oldest
