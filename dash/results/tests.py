@@ -1403,7 +1403,7 @@ class AddTestResultTests(TestCase):
     def test_files_in_table_on_details(self):
         id = self.log_result(test_name='Table', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
         self._assertNotRegex(self.get_detail(id, debug=False), 'files_detail')
-        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=False)
+        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=True)
         self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test2.html', desc='html file2', debug=False)
         self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='screen.jpg', desc='screenshot', debug=False)
         result = self.get_detail(id, debug=False)
