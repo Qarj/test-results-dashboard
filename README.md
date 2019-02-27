@@ -1,8 +1,33 @@
 # test-results-dashboard
 
-See the latest results of acceptance tests per application.
+This project is for viewing test results for any test framework that can access HTTP.
+It is particularly suited for tests using Selenium, WebDriver or Puppeteer.
 
-Requires Python 3, tested with Python 3.5.2 and 3.6.5.
+First, you deploy this project to a server on the company intranet either on Windows or Linux using Apache. 
+
+Then in the `Before` hook you call the dashboard with a http GET to indicating the current test name and that it is pending.
+
+In the `After` hook you call the dashboard again to indicate `pass` or `fail`.
+
+Optionally you can upload test artefacts like screenshots, DOM or anything you want. Then when you view the test result
+you'll see the screenshots and links to the other files uploaded for the test scenario.
+
+Requires Python 3.6 or higher, tested with Python 3.6.5 and 3.7.2.
+
+# Some screenshots with the included test data
+
+## Latest results view
+![Alt text](dev/assets/results.png?raw=true "Latest Results")
+
+## All test results for a single run
+In this example, some tests have not yet completed. There is no need to wait until all the tests
+have finished before seeing some results.
+![Alt text](dev/assets/results_run_TestRun.png?raw=true "Run Result")
+
+## Test result for one scenario
+If you uploaded a screenshot or two here, and maybe the HTML DOM, then you will see that also.
+![Alt text](dev/assets/results_detail.png?raw=true "Individual Test Result")
+
 
 # API
 
@@ -10,9 +35,9 @@ Requires Python 3, tested with Python 3.5.2 and 3.6.5.
 
 The paths given below are relative to the {SITE_ROOT} location.
 
-For the Django development server, {SITE_ROOT} is http://127.0.0.1:8000/
+For the Django development server, {SITE_ROOT} is http://127.0.0.1:8811/
 
-If you have deployed this to Apache, then the {SITE_ROOT} might be like http://mydomain.com/dash/
+If you have deployed this to Apache, then the {SITE_ROOT} might be like http://dash.mycompany/dash/
 
 ## Log a test result
 
@@ -29,6 +54,9 @@ test_passed | False
 run_name    | Apply_Core_J9ZJK
 run_server  | TeamCity
 message     | Stack+Trace+...
+
+Best practice is to generate a unique run_name every time the tests are kicked off. All test results for that run
+will be grouped by that run_name.
 
 ## Upload a file for a test result
 
@@ -56,7 +84,10 @@ postbody
 
 Response fragment
 ```
-    <p>Stored file name: artefacts%2fFinalState_8234jsd.jpg</p>
+    <h2>File logged ok</h2>
+    <p>name: FinalState.jpg</p>
+    <p>File desc: Screen shot when error occurred</p>
+    <p>Artefact url: /results/get_file/?test_name=ApplyAsNewUser&app_name=Apply&run_name=JZ2K9&name=FinalState.jpg</p>
 ```
 
 ## Download file
@@ -65,8 +96,7 @@ HTTP GET
 ```
 {SITE_ROOT}results/get_file/?test_name=ApplyAsNewUser&app_name=Apply&run_name=JZ2K9&name=FinalState.jpg
 ```
-The files uploaded for a test result will be automatically visible on the individual test details page,
-e.g. `{SITE_ROOT}results/2` for test result `id=2`
+The files uploaded for a test result will be automatically visible on the individual test result details.
 
 ## View all runs for an app
 
@@ -95,6 +125,7 @@ e.g. `{SITE_ROOT}results/2` for test result `id=2`
 ```
 {SITE_ROOT}results/2
 ```
+Any files logged will be visible here.
 
 ## Delete a single test result id
 
@@ -102,13 +133,16 @@ HTTP GET
 ```
 {SITE_ROOT}results/delete/5
 ```
+Any associated files will be removed from the file system also.
 
-## Delete all the runs except for the most recent 50
+## Delete all the runs except for the most recent 50 per app
 
 HTTP GET
 ```
-{SITE_ROOT}results/delete_oldest_runs_only_keep_newest/50/
+{SITE_ROOT}results/delete_oldest_runs_per_app_only_keep_newest/50/
 ```
+Any associated files will be removed from the file system also.
+
 
 # Linux Apache Deployment
 

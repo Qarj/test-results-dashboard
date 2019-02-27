@@ -868,16 +868,34 @@ class AddTestResultTests(TestCase):
         #print (response.content.decode('utf-8'))
         self.assertContains(response, '<title>Delete id 1</title>')
         self.assertContains(response, '<h2>Result id 1 deleted ok</h2>')
+        self.assertNotContains(response, 'test artefacts were also deleted')
+
+    def test_delete_result_removes_uploaded_files_also(self):
+        test_result_id = self.log_result(test_name='My test with files', app_name='Details', run_name='DetailsTestRun', run_server='TeamCity')
+
+        result = self.log_file(test_name='My test with files', app_name='Details', run_name='DetailsTestRun', name='test.test', desc='read file content', debug=False)
+        artefact_url = self.get_artefact_url(result)
+        result = self._get_url(artefact_url)
+        self.assertContains(result, 'Some file content')
+
+        result = self.log_file(test_name='My test with files', app_name='Details', run_name='DetailsTestRun', name='other_file.test', desc='something else', debug=False)
+
+        url = reverse('results:delete', args=(test_result_id,))
+        result = self._get_url(url, debug=False)
+        self.assertContains(result, '2 test artefacts were also deleted')
+
+        result = self._get_url(artefact_url, debug=False)
+        self.assertContains(result, 'File does not exist')
 
     #
-    # Delete old runs - only keep newest number #oldest
+    # Delete old runs per app - only keep newest number #oldest
     #
 
-    def test_delete_oldest_runs_only_keep_newest(self):
+    def test_delete_oldest_runs_per_app_only_keep_newest(self):
         """
         Delete oldest runs - only keep newest
         """
-        #Example: http://127.0.0.1:8000/results/delete_oldest_runs_only_keep_newest/50/
+        #Example: http://127.0.0.1:8000/results/delete_oldest_runs_per_app_only_keep_newest/50/
         self.log_result(test_name='Car', app_name='PleaseDeleteMe', run_name='Run1')            #1
         self.log_result(test_name='Truck', app_name='PleaseDeleteMe', run_name='Run1')          #2
         self.log_result(test_name='Bike', app_name='PleaseDeleteMe', run_name='Run2')           #3
@@ -891,7 +909,7 @@ class AddTestResultTests(TestCase):
         self.log_result(test_name='Telephone', app_name='DeleteMeAlso', run_name='Run1')        #9
 
         ## Keep 4 runs - this shouldn't delete anything - only at most 3 Runs 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(5,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(5,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -911,7 +929,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 3 runs - this also shouldn't delete anything - only at most 3 Runs 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(3,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(3,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -931,7 +949,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 2 runs - will only remove Run 1 from PleaseDeleteMe app
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(2,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(2,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -951,7 +969,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 1 runs - only latest run kept for each app
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(1,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(1,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
         #
@@ -969,7 +987,7 @@ class AddTestResultTests(TestCase):
         self.assertContains(response, 'Plane')
 
         ## Keep 0 runs
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(0,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(0,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted oldest runs per app ok')
 
@@ -989,7 +1007,7 @@ class AddTestResultTests(TestCase):
         """
         test_result_id = self.log_result(test_name='My really nice test', app_name='Details', run_name='DetailsTestRun', run_server='TeamCity')
 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(1,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(1,))
         response = self.client.get(url)
 
         #print (response.content.decode('utf-8'))
@@ -1005,7 +1023,7 @@ class AddTestResultTests(TestCase):
         test_result_id = self.log_result(test_name='Test1', app_name='Details', run_name='Run3')
         test_result_id = self.log_result(test_name='Test1', app_name='Details', run_name='Run4')
 
-        url = reverse('results:delete_oldest_runs_only_keep_newest', args=(1,))
+        url = reverse('results:delete_oldest_runs_per_app_only_keep_newest', args=(1,))
         response = self.client.get(url)
         self.assertContains(response, 'Deleted 3 runs')
 
@@ -1385,7 +1403,7 @@ class AddTestResultTests(TestCase):
     def test_files_in_table_on_details(self):
         id = self.log_result(test_name='Table', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
         self._assertNotRegex(self.get_detail(id, debug=False), 'files_detail')
-        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=False)
+        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=True)
         self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test2.html', desc='html file2', debug=False)
         self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='screen.jpg', desc='screenshot', debug=False)
         result = self.get_detail(id, debug=False)
