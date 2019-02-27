@@ -186,6 +186,7 @@ Load some test data
 python load_test_data.py
 cd /var/www/dash/test-results-dashboard/dash/artefacts
 sudo find . -type f -exec chmod a+rw {} \;
+sudo find . -type d -exec chmod a+rw {} \;
 ```
 
 Check that the dashboard seems to be working at http://localhost:8811/results/
