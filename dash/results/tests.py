@@ -1027,6 +1027,37 @@ class AddTestResultTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, 'Deleted 3 runs')
 
+
+    #
+    # Keep - keep only <int> latest runs for this app, delete the others
+    # 
+
+    def test_keep_one_run_for_app(self):
+        app_name = 'Details'
+        test_result_id_1 = self.log_result(test_name='My test with files', app_name=app_name , run_name='Keep_Run1', run_server='PAT')
+        test_result_id_2 = self.log_result(test_name='My test with files', app_name=app_name , run_name='Keep_Run2', run_server='PAT')
+
+        result = self.log_file(test_name='My test with files', app_name=app_name , run_name='Keep_Run1', name='test.test', desc='read file content', debug=False)
+        artefact_url_1 = self.get_artefact_url(result)
+        result = self.log_file(test_name='My test with files', app_name=app_name , run_name='Keep_Run2', name='test.test', desc='read file content', debug=False)
+        artefact_url_2 = self.get_artefact_url(result)
+
+        keep_runs = 1
+        url = reverse('results:keep', args=(app_name,keep_runs,))
+        result = self._get_url(url, debug=False)
+        self.assertContains(result, 'The oldest 1 runs for Details were deleted')
+
+        url = reverse('results:detail', args=(test_result_id_2,))
+        response = self._get_url(url, debug=False)
+        self.assertContains(response, 'Keep_Run2')
+
+        result = self._get_url(artefact_url_1, debug=False)
+        self.assertContains(result, 'File does not exist')
+
+        result = self._get_url(artefact_url_2, debug=False)
+        self.assertContains(result, 'Some file content')
+
+
     #
     # Log result #log
     #
@@ -1403,7 +1434,7 @@ class AddTestResultTests(TestCase):
     def test_files_in_table_on_details(self):
         id = self.log_result(test_name='Table', app_name='Details', run_name='Run_bcd', run_server='TeamCity', test_passed='fail', debug=False)
         self._assertNotRegex(self.get_detail(id, debug=False), 'files_detail')
-        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=True)
+        self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test1.html', desc='html file1', debug=False)
         self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='test2.html', desc='html file2', debug=False)
         self.log_file(test_name='Table', app_name='Details', run_name='Run_bcd', name='screen.jpg', desc='screenshot', debug=False)
         result = self.get_detail(id, debug=False)

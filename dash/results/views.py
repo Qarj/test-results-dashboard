@@ -343,7 +343,6 @@ def app(request, app_name, run_server=None):
     # First get a list of all apps
     app_run_list = remove_duplicates_from_list_preserving_order(list( appLab.values_list("run_name", flat=True) ) )
 
-    output = ''
     app_results = []
     run_count = 0
     failed_run_count = 0
@@ -353,11 +352,9 @@ def app(request, app_name, run_server=None):
         run_count += 1
         this_run_name = run_name
         runLab = appLab.filter(run_name=run_name)
-        firstTestLogDate = runLab[0].date_created.strftime("%a %d/%m/%Y %H:%M:%S") # Wed 18 Mar, 2018 15:11:05
         start = runLab[0].date_created # the first logged test is always the first test started
         end = _get_last_modified_time(runLab) # we need to check every result to find the last completed
         duration, duration_text = _get_duration(start, end)
-        runServer = runLab[0].run_server
         this_run_server = runLab[0].run_server
         runTotalTests = len(runLab)
         runPendingTests = sum(r.test_passed == None for r in runLab)
@@ -491,6 +488,35 @@ def delete_oldest_runs_per_app_only_keep_newest(request, number_of_runs_to_keep)
     }
 
     return render(request, 'results/delete_oldest.html', context)
+
+def keep(request, app_name, keep_runs):
+
+    runs_deleted_count = 0
+    keep_list = remove_duplicates_from_list_preserving_order(list( Result.objects.filter(app_name=app_name)
+        .order_by('date_created', 'run_name').values_list("run_name", flat=True) ) )
+
+    number_of_runs_to_remove_from_keep_list = len(keep_list) - keep_runs
+    if (number_of_runs_to_remove_from_keep_list < 0):
+        number_of_runs_to_remove_from_keep_list = 0
+
+    remove_list = keep_list[:number_of_runs_to_remove_from_keep_list]
+
+    for run_to_remove in remove_list:
+        runs_deleted_count += 1
+        Result.objects.filter(run_name=run_to_remove, app_name=app_name).delete()
+        Artefact.objects.filter(run_name=run_to_remove, app_name=app_name).delete()
+
+    page_title = 'Keep newest'
+    page_heading = f'Keep newest {keep_runs} runs'
+    message = f'The oldest {runs_deleted_count} runs for {app_name} were deleted'
+
+    context = {
+        'page_title': page_title,
+        'page_heading': page_heading,
+        'message': message,
+    }
+
+    return render(request, 'results/keep.html', context)
 
 def latest(request, run_server=None):
     resultLab = Result.objects.all()

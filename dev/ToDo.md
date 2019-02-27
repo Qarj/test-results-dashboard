@@ -13,10 +13,10 @@ x put assets in table
 x show asset description
 x draw border around table
 x show asset offset time (i.e. from Start Time delta)
-- understand deletion bugs
-    - the bug is that it is not deleting the oldest, perhaps the oldest per day
-- include artefacts in deletion
-- add method to delete test older than days
+x understand deletion bugs
+    x the bug is that it is not deleting the oldest, perhaps the oldest per day - bug fixed, sort order wrong
+x include artefacts in deletion
+x added keep newest runs per app option
 
 
 ## Phase II

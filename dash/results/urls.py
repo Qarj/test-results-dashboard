@@ -31,6 +31,9 @@ urlpatterns = [
     # ex: /results/app/My_App/TeamCity/
     path('app/<app_name>/<run_server>/', views.app, name='app'),
 
+    # ex: /results/app/My_App/keep/5/
+    path('app/<app_name>/keep/<int:keep_runs>/', views.keep, name='keep'),
+
     # ex: /results/delete/5/
     path('delete/<int:result_id>/', views.delete, name='delete'),
 

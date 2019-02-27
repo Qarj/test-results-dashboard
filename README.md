@@ -135,7 +135,15 @@ HTTP GET
 ```
 Any associated files will be removed from the file system also.
 
-## Delete all the runs except for the most recent 50 per app
+## Keep the newest <int> runs for an app, others will be deleted
+
+HTTP GET
+```
+{SITE_ROOT}results/app/Apply/keep/5
+```
+Any associated files will be removed from the file system also.
+
+## Delete all the runs except for the most recent <int> per app
 
 HTTP GET
 ```
