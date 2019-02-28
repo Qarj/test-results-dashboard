@@ -216,6 +216,9 @@ Initialise the database (or recreate it):
 cd dev
 python delete_dashboard_then_create_empty.py
 sudo chmod 666 /var/www/dash/test-results-dashboard/dash/db.sqlite3
+sudo rm -r /var/www/dash/test-results-dashboard/dash/artefacts
+mkdir /var/www/dash/test-results-dashboard/dash/artefacts
+sudo chmod 777 /var/www/dash/test-results-dashboard/dash/artefacts
 ```
 
 Start the development server
