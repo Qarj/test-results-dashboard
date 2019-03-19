@@ -262,12 +262,16 @@ deactivate
 ```
 
 # Windows Apache Deployment
+These instructions require 32-bit (not 64 bit!) Python minimum version 3.6.x.
+
+https://www.python.org/downloads/
 
 ```
 mkdir c:\git
 cd /D c:/git
 git clone https://github.com/Qarj/test-results-dashboard
 pip install Django
+pip install requests
 ```
 
 ## Install Apache
@@ -289,8 +293,8 @@ Microsoft Visual C++ 14.0 build tools are required, you install them from the Vi
 - Run the installer, click `Visual C++ build tools` (top left option) then the check boxes for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
 - You might need to reboot
 
-Ensure you have Python 3.6.x or higher 32-bit version installed (default from Python.org).
-Do not install 64 bit. 
+You might need to ensure `rc.exe` is part of the system path. On one occasion I had
+to add `C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86` to the path.
 
 Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
 - Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
@@ -326,7 +330,7 @@ First
 mod_wsgi-express module-config
 ```
 
-then copy the output to httpd.conf after the #LoadModule section
+then copy the output to httpd.conf after the final `#LoadModule` statement
 
 Now save & close the file.
 
@@ -351,7 +355,7 @@ to specify the port.
 ## Create a dashboard and load some test data
 Initialise the database (or recreate it):
 ```
-cd C:/git/test-results-dashboard/dash/dev
+cd C:/git/test-results-dashboard/dev
 python delete_dashboard_then_create_empty.py
 ```
 
