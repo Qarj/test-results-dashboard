@@ -288,15 +288,15 @@ C:\Apache24\bin\httpd -k start
 
 Follow instructions exactly, and do not mix 32 and 64 bit!
 
-Microsoft Visual C++ 14.0 build tools are required, you install them from the Visual Studio 2017 Build Tools
-- https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017 - choose install "Build Tools for Visual Studio 2017"
-- Run the installer, click `Visual C++ build tools` (top left option) then the check boxes for `C++/CLI support` and `VC++ 2015.3 v14.00 (v140) toolset for desktop` on the right hand side
+Microsoft Visual C++ 14.0 build tools are required, you install them from the _Visual Studio Build Tools 2019_
+- https://visualstudio.microsoft.com/downloads/ - choose install "Tools for Visual Studio 2019"
+- Run the installer, click `Visual C++ build tools` (top left option) then the check box and `MSVC v140 - VS 2015 C++ build tools (v14.00)` on the right hand side
 - You might need to reboot
 
-You might need to ensure `rc.exe` is part of the system path. On one occasion I had
-to add `C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86` to the path.
+`rc.exe` must be in the system path
+- add `C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86` to the path
 
-Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command` then select `Run as administrator`
+Press Windows Key, type `VS2015` right click `VS2015 x86 Native Tools Command Prompt` then select `Run as administrator`
 - Note: On my Windows 7 machine I had to select `Developer Command Prompt for VS 2017 (2)`
 
 If Apache is not installed at a common location, then specify it
